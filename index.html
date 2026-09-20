@@ -66,8 +66,8 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
 .tab .tp{display:block;font-size:15px;font-variant-numeric:tabular-nums;margin-top:1px}
 .tab .tl{display:block;font-size:10px;color:var(--dim);font-variant-numeric:tabular-nums}
 .tab .tc{display:block;font-size:10px;font-variant-numeric:tabular-nums;margin-top:1px}
-.tab .tc.dn{color:var(--long)}
-.tab .tc.up{color:var(--short)}
+.tab .tc.dn{color:#ff5145}
+.tab .tc.up{color:#22c55e}
 
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:5px;margin-bottom:9px}
 .phead{display:flex;align-items:center;gap:9px;padding:7px 11px;border-bottom:1px solid var(--line);
@@ -1261,12 +1261,12 @@ function nearestClusters(st) {
 // Whichever of the two nearest clusters (below/above) sits closer to price
 // right now, in either direction — for a compact per-coin readout where
 // there's only room for one number, not the full below-and-above pair.
-function nearestClusterPct(st) {
+function nearestCluster(st) {
   if (!st.price) return null;
   const n = nearestClusters(st);
   const cands = [];
-  if (n.dn) cands.push({ pct: ((n.dn.price - st.price) / st.price) * 100, dir: "dn" });
-  if (n.up) cands.push({ pct: ((n.up.price - st.price) / st.price) * 100, dir: "up" });
+  if (n.dn) cands.push({ price: n.dn.price, pct: ((n.dn.price - st.price) / st.price) * 100, dir: "dn" });
+  if (n.up) cands.push({ price: n.up.price, pct: ((n.up.price - st.price) / st.price) * 100, dir: "up" });
   if (!cands.length) return null;
   cands.sort((a, b) => Math.abs(a.pct) - Math.abs(b.pct));
   return cands[0];
@@ -1278,13 +1278,13 @@ function paintTabs() {
   el.innerHTML = SYMS.map(s => {
     const st = ST[s.key];
     const t60 = trailing60(st);
-    const np = nearestClusterPct(st);
+    const nc = nearestCluster(st);
     return '<button class="tab' + (s.key === active ? " on" : "") +
       (st.alert ? " alert" : "") + '" data-sym="' + s.key + '">' +
       '<span class="tk">' + s.key + '</span>' +
       '<span class="tp">' + (st.price ? fmtPx(st.price, s.dp) : "—") + '</span>' +
       (t60.tot ? '<span class="tl">' + fmtUsd(t60.tot) + '</span>' : '<span class="tl">&nbsp;</span>') +
-      (np ? '<span class="tc ' + np.dir + '">' + (np.pct >= 0 ? "+" : "") + np.pct.toFixed(2) + '% cluster</span>' : '') +
+      (nc ? '<span class="tc ' + nc.dir + '">' + fmtPx(nc.price, s.dp) + ' cluster</span>' : '') +
       '</button>';
   }).join("");
 }
