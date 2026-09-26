@@ -404,6 +404,18 @@ const SYMS = [
     bitget: "ZECUSDT", gate: "ZEC_USDT", htx: "ZEC-USDT", ctVal: 0.01, dp: 2, mmr: 0.01 },
   { key: "ENA", bybit: "ENAUSDT", binance: "enausdt", okx: "ENA-USDT-SWAP",
     bitget: "ENAUSDT", gate: "ENA_USDT", htx: "ENA-USDT", ctVal: 10, dp: 5, mmr: 0.01 },
+  { key: "WLD", bybit: "WLDUSDT", binance: "wldusdt", okx: "WLD-USDT-SWAP",
+    bitget: "WLDUSDT", gate: "WLD_USDT", htx: "WLD-USDT", ctVal: 1, dp: 4, mmr: 0.01 },
+  /* GALA has no HTX listing (confirmed against HTX's own live contract
+     list — not a lookup mistake). Its htx field is still the naming
+     convention's guess so BY.htx stays populated like every other symbol;
+     since HTX subscribes with one wildcard topic and matches incoming
+     contract_code strings against BY.htx (see htx.parse below), a code
+     that never actually appears in that feed just never matches — GALA's
+     HTX card sits at zero prints permanently, same as a stalled feed,
+     not an error. */
+  { key: "GALA", bybit: "GALAUSDT", binance: "galausdt", okx: "GALA-USDT-SWAP",
+    bitget: "GALAUSDT", gate: "GALA_USDT", htx: "GALA-USDT", ctVal: 10, dp: 6, mmr: 0.01 },
 ];
 const BY = { bybit: {}, binance: {}, okx: {}, bitget: {}, gate: {}, htx: {} };
 for (const s of SYMS) {
