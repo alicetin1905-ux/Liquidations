@@ -1339,6 +1339,15 @@ function paintTabs() {
     b.children[3].textContent = nc ? fmtPx(nc.price, s.dp) + " cluster" : "";
   });
 }
+/* After a tab tap, scroll the coin's price & liquidation chart to the top of
+   the screen — on a phone the 25 tabs push it well out of view. */
+function showChart() {
+  requestAnimationFrame(() => {
+    const panel = document.getElementById("chartwrap").closest(".panel");
+    const top = panel.getBoundingClientRect().top + window.scrollY - 8;
+    window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  });
+}
 function switchTo(sym) {
   if (sym === active) return;
   // Remember where the outgoing symbol was panned to, so returning to it
@@ -1677,7 +1686,9 @@ function syncControls() {
 }
 function buildControls() {
   document.getElementById("tabs").addEventListener("click", ev => {
-    const b = ev.target.closest("[data-sym]"); if (b) switchTo(b.dataset.sym);
+    const b = ev.target.closest("[data-sym]"); if (!b) return;
+    switchTo(b.dataset.sym);
+    showChart();
   });
   const f = document.getElementById("filters");
   f.innerHTML = Object.keys(EX).map(k => '<span class="chip on" data-f="' + k + '">' + EX[k].label + '</span>')
