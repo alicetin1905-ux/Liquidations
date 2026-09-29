@@ -416,7 +416,19 @@ const SYMS = [
      not an error. */
   { key: "GALA", bybit: "GALAUSDT", binance: "galausdt", okx: "GALA-USDT-SWAP",
     bitget: "GALAUSDT", gate: "GALA_USDT", htx: "GALA-USDT", ctVal: 10, dp: 6, mmr: 0.01 },
+  { key: "ONDO", bybit: "ONDOUSDT", binance: "ondousdt", okx: "ONDO-USDT-SWAP",
+    bitget: "ONDOUSDT", gate: "ONDO_USDT", htx: "ONDO-USDT", ctVal: 10, dp: 4, mmr: 0.01 },
+  /* PEPE trades as 1000PEPE on Bybit and Binance (one unit = 1000 PEPE,
+     priced per 1000) but as plain PEPE on OKX, Bitget, Gate and HTX. The
+     page runs on Bybit's scale, so unit: 1000 converts prints and open
+     interest from the plain-PEPE venues to it (see ingest and loadOI). */
+  { key: "PEPE", bybit: "1000PEPEUSDT", binance: "1000pepeusdt", okx: "PEPE-USDT-SWAP",
+    bitget: "PEPEUSDT", gate: "PEPE_USDT", htx: "PEPE-USDT", ctVal: 10000000, dp: 7, mmr: 0.01, unit: 1000 },
 ];
+/* venues that list a unit-scaled coin (cfg.unit) in those same units */
+const unitScaled = (exch) => exch === "bybit" || exch === "binance";
+/* what a quantity is counted in on the page: "PEPE" -> "1000PEPE" */
+const unitName = (cfg) => (cfg.unit || "") + cfg.key;
 const BY = { bybit: {}, binance: {}, okx: {}, bitget: {}, gate: {}, htx: {} };
 for (const s of SYMS) {
   BY.bybit[s.bybit] = s.key; BY.binance[s.bybit] = s.key;
@@ -987,6 +999,8 @@ let pendingPaint = false;
 function ingest(e) {
   const st = ST[e.sym];
   if (!st || !e.qty || !e.price || !isFinite(e.qty) || !isFinite(e.price)) return;
+  const u = st.cfg.unit;
+  if (u && !unitScaled(e.exch)) { e.price *= u; e.qty /= u; }   /* same USD, Bybit's units */
   e.usd = e.qty * e.price;
   if (!e.ts || Math.abs(Date.now() - e.ts) > 864e5) e.ts = Date.now();
   st.events.unshift(e);
@@ -1091,7 +1105,7 @@ async function loadOI(st) {
       return +(d.size || d.amount); }],
   ];
   await Promise.all(jobs.map(async ([k, fn]) => {
-    try { const v = await fn(); if (isFinite(v) && v > 0) st.oi[k] = v; }
+    try { const v = await fn(); if (isFinite(v) && v > 0) st.oi[k] = st.cfg.unit && !unitScaled(k) ? v / st.cfg.unit : v; }
     catch (e) { st.oi[k] = null; }
   }));
   oiRecord(st);
@@ -1364,7 +1378,7 @@ function paintRail() {
 function paintPrice() {
   const st = cur();
   document.getElementById("px").innerHTML = fmtPx(st.price, st.cfg.dp) +
-    '<small>' + st.cfg.key + 'USDT perp</small>';
+    '<small>' + unitName(st.cfg) + 'USDT perp</small>';
 }
 function visible(st) {
   return st.events.filter(e => st.show[e.exch] && st.show[e.side] && e.usd >= st.minUsd);
@@ -1448,7 +1462,7 @@ function paintContext() {
 
   const last = st.oiHist.length ? st.oiHist[st.oiHist.length - 1] : null;
   document.getElementById("oi-val").textContent = last
-    ? Math.round(last.oi).toLocaleString() + " " + st.cfg.key : "—";
+    ? Math.round(last.oi).toLocaleString() + " " + unitName(st.cfg) : "—";
   let rows = "";
   for (const [name, ms] of [["5m", 3e5], ["15m", 9e5], ["1h", 36e5]]) {
     const d = oiDelta(st, ms);
@@ -1529,7 +1543,7 @@ function paintOiLine() {
   const got = Object.keys(st.oi).filter(k => st.oi[k]);
   document.getElementById("oiline").innerHTML = total
     ? '<span style="color:var(--mid)">open interest ' +
-      total.toLocaleString(undefined, { maximumFractionDigits: 0 }) + " " + st.cfg.key +
+      total.toLocaleString(undefined, { maximumFractionDigits: 0 }) + " " + unitName(st.cfg) +
       '</span> <span style="color:var(--dim)">(' + got.join(", ") + ')</span>'
     : '<span style="color:var(--warn)">open interest unavailable — levels show relative shape only</span>';
 }
@@ -1541,7 +1555,7 @@ function paintMagnets() {
     v.textContent = fmtPx(bin.price, st.cfg.dp);
     const pct = ((bin.price - p) / p) * 100;
     d.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%  ·  ~" +
-      bin[key].toFixed(bin[key] < 100 ? 1 : 0) + " " + st.cfg.key + " clustered";
+      bin[key].toFixed(bin[key] < 100 ? 1 : 0) + " " + unitName(st.cfg) + " clustered";
   };
   const n = nearestClusters(st);
   set("mag-dn", n.dn, "long");
