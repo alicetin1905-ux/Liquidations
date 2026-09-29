@@ -68,6 +68,13 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
 .tab .tc{display:block;font-size:10px;font-variant-numeric:tabular-nums;margin-top:1px}
 .tab .tc.dn{color:#ff5145}
 .tab .tc.up{color:#22c55e}
+/* distance to the nearest cluster: the bar fills as price closes in */
+.tab .tb{display:flex;align-items:center;gap:5px;margin-top:3px;font-size:10px;font-variant-numeric:tabular-nums}
+.tab .tb i{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.08);overflow:hidden}
+.tab .tb b{display:block;height:100%;width:0;border-radius:2px;transition:width .4s ease}
+.tab .tb.dn b{background:#ff5145} .tab .tb.dn em{color:#ff5145}
+.tab .tb.up b{background:#22c55e} .tab .tb.up em{color:#22c55e}
+.tab .tb em{font-style:normal;min-width:38px;text-align:right}
 
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:5px;margin-bottom:9px}
 .phead{display:flex;align-items:center;gap:9px;padding:7px 11px;border-bottom:1px solid var(--line);
@@ -1315,6 +1322,7 @@ function nearestCluster(st) {
    every ticker message replaced them under the finger mid-tap. Ticker
    updates only queue a repaint (queueTabs), a few per second at most. */
 let tabsQueued = false;
+const CLUSTER_BAR_PCT = 10;
 function queueTabs() {
   if (tabsQueued) return;
   tabsQueued = true;
@@ -1326,7 +1334,8 @@ function paintTabs() {
   if (el.children.length !== SYMS.length) {
     el.innerHTML = SYMS.map(s => '<button class="tab" data-sym="' + s.key + '">' +
       '<span class="tk">' + s.key + '</span><span class="tp">—</span>' +
-      '<span class="tl">&nbsp;</span><span class="tc"></span></button>').join("");
+      '<span class="tl">&nbsp;</span><span class="tc"></span>' +
+      '<span class="tb"><i><b></b></i><em></em></span></button>').join("");
   }
   SYMS.forEach((s, i) => {
     const b = el.children[i], st = ST[s.key];
@@ -1337,6 +1346,12 @@ function paintTabs() {
     b.children[2].textContent = t60.tot ? fmtUsd(t60.tot) : "\u00a0";
     b.children[3].className = "tc" + (nc ? " " + nc.dir : "");
     b.children[3].textContent = nc ? fmtPx(nc.price, s.dp) + " cluster" : "";
+    const tb = b.children[4];
+    tb.className = "tb" + (nc ? " " + nc.dir : "");
+    tb.style.visibility = nc ? "" : "hidden";
+    /* full at 0% away, empty at CLUSTER_BAR_PCT or further */
+    tb.firstChild.firstChild.style.width = nc ? Math.max(0, 1 - Math.abs(nc.pct) / CLUSTER_BAR_PCT) * 100 + "%" : "0";
+    tb.lastChild.textContent = nc ? (nc.pct > 0 ? "+" : "") + nc.pct.toFixed(2) + "%" : "";
   });
 }
 /* After a tab tap, scroll the coin's price & liquidation chart to the top of
