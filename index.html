@@ -153,14 +153,6 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
 
 <div class="panel">
   <div class="rail" id="rail"></div>
-  <div class="magnets">
-    <div class="mag"><div class="h">nearest cluster below <span class="estmark">est</span></div>
-      <div class="v" id="mag-dn" style="color:var(--long)">—</div>
-      <div class="d" id="mag-dn-d"></div></div>
-    <div class="mag"><div class="h">nearest cluster above <span class="estmark">est</span></div>
-      <div class="v" id="mag-up" style="color:var(--short)">—</div>
-      <div class="d" id="mag-up-d"></div></div>
-  </div>
 </div>
 
 <div class="panel">
@@ -173,6 +165,14 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
     <span id="oiline"></span>
   </div>
   <div id="chartwrap"><div id="chart"></div><canvas id="overlay"></canvas></div>
+  <div class="magnets">
+    <div class="mag"><div class="h">nearest cluster below <span class="estmark">est</span></div>
+      <div class="v" id="mag-dn" style="color:var(--long)">—</div>
+      <div class="d" id="mag-dn-d"></div></div>
+    <div class="mag"><div class="h">nearest cluster above <span class="estmark">est</span></div>
+      <div class="v" id="mag-up" style="color:var(--short)">—</div>
+      <div class="d" id="mag-up-d"></div></div>
+  </div>
 </div>
 
 <div class="panel">
@@ -184,7 +184,7 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
       splits it across the leverage mix below, computes each cohort's exact liquidation price, then
       discards any cohort whose level price already traded through. Change the assumptions and the
       picture changes — treat it as a map of where stops likely cluster, not as fact.
-      The two nearest clusters read out at the top of the page.</div>
+      The two nearest clusters read out right below the chart.</div>
 
     <div id="assumptions" style="display:none;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">
       <div style="font-size:11px;color:var(--dim);margin-bottom:8px">Leverage mix — share of open interest at each tier</div>
