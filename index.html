@@ -109,43 +109,9 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:10.5px;color:var(--dim);padding:7px 11px 0}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
 
-/* ---- stats ---- */
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.win{display:grid;grid-template-columns:44px 1fr 1fr;gap:5px 8px;align-items:center;
-  font-variant-numeric:tabular-nums}
-.win .lbl{color:var(--dim);font-size:11px}
-.win .v{font-size:12.5px;text-align:right}
-.bar{grid-column:1/-1;height:3px;background:var(--line);display:flex;margin-bottom:6px;border-radius:2px;overflow:hidden}
-.bar span:first-child{background:var(--long)}
-.bar span:last-child{background:var(--short)}
-.big{font-size:23px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15}
-.cap{font-size:10.5px;color:var(--dim);margin-top:1px}
-
-/* ---- tape ---- */
-#tape{max-height:290px;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.row{display:grid;grid-template-columns:52px 58px 1fr 78px 74px;gap:7px;padding:3px 11px;
-  font-size:11.5px;font-variant-numeric:tabular-nums;border-left:2px solid transparent;
-  align-items:center;white-space:nowrap}
-.row.L{border-left-color:var(--long);background:linear-gradient(90deg,var(--long-dim),transparent 62%)}
-.row.S{border-left-color:var(--short);background:linear-gradient(90deg,var(--short-dim),transparent 62%)}
-.row .t{color:var(--dim)}
-.row .e{color:var(--mid)}
-.row .sd{font-weight:600}
-.row.L .sd{color:var(--long)} .row.S .sd{color:var(--short)}
-.row .q,.row .p{text-align:right}
-.row.big-hit{font-weight:700}
-.row.big-hit .q{font-size:12.5px}
-@keyframes flash{from{background-color:rgba(255,255,255,.14)}to{background-color:transparent}}
-.row.new{animation:flash .55s ease-out}
-.empty{padding:22px 11px;color:var(--dim);font-size:12px;text-align:center;line-height:1.7}
-
-/* ---- filters ---- */
-.filters{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11px}
 .chip{padding:3px 9px;border:1px solid var(--line);border-radius:3px;color:var(--dim);
   background:var(--panel2)}
 .chip.on{color:var(--bright);border-color:var(--mid)}
-.chip.on.lg{color:var(--long);border-color:var(--long)}
-.chip.on.sh{color:var(--short);border-color:var(--short)}
 
 /* ---- model panel ---- */
 .model-note{font-size:11px;color:var(--model);background:rgba(240,180,41,.07);
@@ -167,40 +133,8 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
   background:#05070b;padding:7px 9px;border-radius:3px;white-space:pre-wrap;word-break:break-all;line-height:1.5}
 .foot{font-size:10.5px;color:var(--dim);padding:4px 3px 12px;line-height:1.65}
 
-.ctx3{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
-  margin:-10px -11px;border-radius:0 0 5px 5px;overflow:hidden}
-.ctxcol{background:var(--panel);padding:11px}
-.win3{display:grid;grid-template-columns:52px 1fr 1fr;gap:3px 8px;align-items:center;
-  font-variant-numeric:tabular-nums;margin-top:5px}
-.win3 .lbl{color:var(--dim);font-size:11px}
-.win3 .v{font-size:11.5px;text-align:right}
-#spark{width:100%;height:34px;display:block;margin:8px 0 4px}
-.read{font-size:11px;line-height:1.5;margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
-@media(max-width:720px){.ctx3{grid-template-columns:1fr}}
-
-.win4{display:grid;grid-template-columns:46px 1fr 1fr 52px;gap:4px 8px;align-items:center;
-  font-variant-numeric:tabular-nums}
-.win4 .lbl{color:var(--dim);font-size:11px}
-.win4 .v{font-size:12px;text-align:right}
-.lhead,.lrow{display:grid;grid-template-columns:88px 48px 1fr 60px 60px 60px;gap:6px;
-  padding:4px 11px;font-size:11.5px;font-variant-numeric:tabular-nums;align-items:center;white-space:nowrap}
-.lhead{color:var(--dim);font-size:10.5px;border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);background:var(--panel2)}
-.lhead span:nth-child(n+3),.lrow span:nth-child(n+3){text-align:right}
-.lrow{border-left:2px solid transparent}
-.lrow.L{border-left-color:var(--long)} .lrow.S{border-left-color:var(--short)}
-.lrow.L .sd{color:var(--long)} .lrow.S .sd{color:var(--short)}
-.lrow .t{color:var(--dim)}
-.lrow.rec{opacity:.72;border-left-style:dashed}
-.est{color:var(--model);margin-left:2px}
-#logrows{max-height:290px;overflow-y:auto;-webkit-overflow-scrolling:touch}
 @media(max-width:720px){
-  .lhead,.lrow{grid-template-columns:70px 40px 1fr 48px 48px 48px;font-size:10.5px;gap:4px;padding:4px 8px}
-}
-@media(max-width:720px){
-  .grid2{grid-template-columns:1fr}
   #chartwrap{height:310px}
-  .row{grid-template-columns:46px 50px 1fr 66px 66px;font-size:11px;gap:5px}
   .px{width:100%;margin-left:0}
 }
 </style>
@@ -241,89 +175,6 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
   <div id="chartwrap"><div id="chart"></div><canvas id="overlay"></canvas></div>
 </div>
 
-<div class="grid2">
-  <div class="panel" style="margin-bottom:0">
-    <div class="phead"><b>Rolling totals</b><span style="margin-left:auto;color:var(--dim)" id="tot-note">USD notional</span></div>
-    <div class="pbody">
-      <div class="grid2" style="margin-bottom:12px">
-        <div><div class="big" id="tot-long" style="color:var(--long)">$0</div>
-          <div class="cap">longs wiped, 1h</div></div>
-        <div><div class="big" id="tot-short" style="color:var(--short)">$0</div>
-          <div class="cap">shorts wiped, 1h</div></div>
-      </div>
-      <div class="win" id="wins"></div>
-      <div style="margin-top:10px;padding-top:9px;border-top:1px solid var(--line)">
-        <div class="cap">largest single print, session</div>
-        <div id="biggest" style="font-size:13px;margin-top:3px">none yet</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="panel" style="margin-bottom:0">
-    <div class="phead"><b>Live tape</b>
-      <span style="margin-left:auto"><span class="chip" id="pausebtn">pause</span></span></div>
-    <div class="pbody" style="padding-bottom:8px">
-      <div class="filters" id="filters"></div>
-      <div class="filters" style="margin-top:6px">
-        <label style="color:var(--dim)">min $
-          <input type="number" id="minusd" value="0" step="1000" min="0"></label>
-        <span class="chip" id="clearbtn">clear</span>
-      </div>
-    </div>
-    <div id="tape"><div class="empty">Waiting for the first liquidation.<br>
-      Quiet markets can go minutes without one.</div></div>
-  </div>
-</div>
-
-
-<div class="panel" style="margin-top:9px">
-  <div class="phead"><b>Context</b>
-    <span style="margin-left:auto;color:var(--dim)" id="ctx-store"></span></div>
-  <div class="pbody">
-    <div class="ctx3">
-      <div class="ctxcol">
-        <div class="cap">liquidation intensity</div>
-        <div class="big" id="int-val">$0</div>
-        <div class="cap" id="int-lab">baseline building</div>
-        <div class="cap" id="int-split" style="margin-top:3px"></div>
-        <canvas id="spark" height="34"></canvas>
-        <div class="cap" id="int-z"></div>
-      </div>
-      <div class="ctxcol">
-        <div class="cap">open interest</div>
-        <div class="big" id="oi-val" style="font-size:18px">—</div>
-        <div class="win3" id="oi-rows"></div>
-        <div class="read" id="oi-regime">building history</div>
-      </div>
-      <div class="ctxcol">
-        <div class="cap">funding, per 8h</div>
-        <div class="win3" id="fund-rows" style="margin-top:6px"></div>
-        <div class="read" id="fund-note">—</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="panel" style="margin-top:9px">
-  <div class="phead"><b>Cascade log</b>
-    <span id="log-count" style="margin-left:auto;color:var(--dim)">no events yet</span></div>
-  <div class="pbody" style="padding-bottom:7px">
-    <div class="cap" style="margin-bottom:5px">reversal return after a cascade — positive means fading it worked</div>
-    <div class="cap" id="gap-note" style="margin-bottom:7px"></div>
-    <div class="win4" id="log-stats"></div>
-    <div class="filters" style="margin-top:11px">
-      <label style="color:var(--dim)">trigger above
-        <input type="number" id="log-th" value="99" step="0.5" min="80" max="99.9" style="width:64px"> pct</label>
-      <span class="chip" id="log-rec">observed only</span>
-      <span class="chip" id="log-csv">export csv</span>
-      <span class="chip" id="log-clear">clear log</span>
-    </div>
-  </div>
-  <div class="lhead"><span>when</span><span>wiped</span><span>size</span><span>+5m</span><span>+15m</span><span>+1h</span></div>
-  <div id="logrows"></div>
-</div>
-
 <div class="panel">
   <div class="phead"><b>Estimated liquidation levels</b>
     <span style="margin-left:auto"><span class="chip" id="modeltoggle">assumptions</span></span></div>
@@ -356,9 +207,9 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
 
 <div class="foot">
   Bybit, Binance, OKX, Bitget, Gate.io and HTX publish liquidation streams; this reads all six directly
-  from the browser, one connection each carrying all six symbols. Exchanges report bankruptcy price, not
-  fill price, so notional is approximate. Every symbol keeps its own baseline, cascade log and
-  model assumptions. The intensity baseline is stored in this browser and needs 30 minutes before it will score anything; it sharpens over about a day.
+  from the browser, one connection each carrying every coin. Exchanges report bankruptcy price, not
+  fill price, so notional is approximate. Every coin keeps its own model assumptions. The last hour of
+  prints is kept in this browser, and OKX and Gate.io history fills in what was missed while closed.
 </div>
 
 <script>/*!
@@ -509,24 +360,19 @@ function buildLevels(candles, opts) {
 }
 
 /* ---------- per-symbol state ------------------------------------------- */
-const MAX_EVENTS = 4000, BASE_MINUTES = 1440, BASE_MIN_SAMPLE = 30;
-const HORIZONS = [["5m", 3e5], ["15m", 9e5], ["1h", 36e5]];
-const GAP_MIN = 6 * 6e4;
+const MAX_EVENTS = 4000;
 const ST = {};
 let active = "BTC";
-let storageOK = true;
 
 function newState(cfg) {
   return {
-    cfg, events: [], biggest: null, price: 0, candles: [], m1: [], kc: [],
-    levels: null, oi: {}, oiHist: [], fund: {}, ctVal: cfg.ctVal, bybitOiLive: false,
+    cfg, events: [], price: 0, candles: [],
+    levels: null, oi: {}, ctVal: cfg.ctVal, bybitOiLive: false,
     gateMult: 1,   // fallback only — overwritten live from Gate.io, see loadGateMult
-    base: { done: [], curMin: -1, curL: 0, curS: 0,
-      secL: new Float64Array(60), secS: new Float64Array(60), secAt: new Float64Array(60) },
-    log: { events: [], threshold: 99, armed: true, includeRec: false },
+    // per-second buckets for the tab's trailing-60s total (trailing60)
+    base: { secL: new Float64Array(60), secS: new Float64Array(60), secAt: new Float64Array(60) },
     tiers: [{ lev: 10, w: 35 }, { lev: 25, w: 30 }, { lev: 50, w: 22 }, { lev: 100, w: 13 }],
     mmr: cfg.mmr, longShare: 0.5, lookbackDays: 3,
-    lastSeen: 0, gapNote: "", alert: false, lastTop: 0, saveDue: 0,
   };
 }
 for (const s of SYMS) ST[s.key] = newState(s);
@@ -539,37 +385,11 @@ const fmtUsd = n => n >= 1e9 ? "$" + (n / 1e9).toFixed(2) + "B"
 const fmtPx = (n, dp) => n ? n.toLocaleString("en-US",
   { minimumFractionDigits: dp == null ? 2 : dp, maximumFractionDigits: dp == null ? 2 : dp }) : "—";
 const hhmmss = ts => new Date(ts).toTimeString().slice(0, 8);
-const med = s => !s.length ? 0 : s.length % 2 ? s[s.length >> 1]
-  : (s[(s.length >> 1) - 1] + s[s.length >> 1]) / 2;
-function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { storageOK = false; return null; } }
-function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { storageOK = false; } }
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
-/* ---------- baseline ---------------------------------------------------- */
-function baselineLoad(st) {
-  const raw = lsGet("crucible.baseline.v3." + st.cfg.key);
-  if (!raw) return;
-  try {
-    const j = JSON.parse(raw);
-    const cut = Math.floor(Date.now() / 6e4) - BASE_MINUTES;
-    if (Array.isArray(j)) st.base.done = j.filter(d => d && d.m > cut);
-  } catch (e) {}
-}
-function baselineSave(st) {
-  if (!storageOK || Date.now() < st.saveDue) return;
-  st.saveDue = Date.now() + 20000;
-  lsSet("crucible.baseline.v3." + st.cfg.key, JSON.stringify(st.base.done));
-}
 function baselineAdd(st, e) {
-  const B = st.base, now = Date.now(), m = Math.floor(now / 6e4);
-  if (B.curMin < 0) B.curMin = m;
-  if (m !== B.curMin) {
-    B.done.push({ m: B.curMin, L: B.curL, S: B.curS });
-    while (B.done.length > BASE_MINUTES) B.done.shift();
-    B.curMin = m; B.curL = 0; B.curS = 0;
-    baselineSave(st);
-  }
-  if (e.side === "L") B.curL += e.usd; else B.curS += e.usd;
-  const s = Math.floor(now / 1000), k = s % 60;
+  const B = st.base, s = Math.floor(Date.now() / 1000), k = s % 60;
   if (B.secAt[k] !== s) { B.secAt[k] = s; B.secL[k] = 0; B.secS[k] = 0; }
   if (e.side === "L") B.secL[k] += e.usd; else B.secS[k] += e.usd;
 }
@@ -579,222 +399,7 @@ function trailing60(st) {
   for (let k = 0; k < 60; k++) if (s - B.secAt[k] < 60) { L += B.secL[k]; Sh += B.secS[k]; }
   return { L, S: Sh, tot: L + Sh };
 }
-function baselineScore(st, x) {
-  const n = st.base.done.length;
-  if (n < BASE_MIN_SAMPLE) return { ready: false, n };
-  const vals = st.base.done.map(d => d.L + d.S);
-  const pct = (vals.reduce((a, v) => a + (v < x ? 1 : 0), 0) / n) * 100;
-  // Zero-inflated: most minutes are empty. Fitting spread across the zeros
-  // pins median and MAD at zero and reads every active minute as 30 sigma,
-  // so dispersion is measured on active minutes only.
-  const act = vals.filter(v => v > 0).map(v => Math.log1p(v)).sort((a, b) => a - b);
-  let z = null, typical = null;
-  if (act.length >= 12) {
-    const m = med(act);
-    const mad = med(act.map(v => Math.abs(v - m)).sort((a, b) => a - b));
-    typical = Math.expm1(m);
-    if (x > 0) z = (Math.log1p(x) - m) / Math.max(mad * 1.4826, 0.25);
-  }
-  return { ready: true, n, pct, z, typical, quiet: 1 - act.length / n };
-}
 
-/* ---------- open interest ---------------------------------------------- */
-function oiRecord(st) {
-  const total = Object.values(st.oi).reduce((a, b) => a + (b || 0), 0);
-  if (!total || !st.price) return;
-  st.oiHist.push({ t: Date.now(), oi: total, px: st.price });
-  const cutoff = Date.now() - 4 * 36e5;
-  while (st.oiHist.length && st.oiHist[0].t < cutoff) st.oiHist.shift();
-}
-function oiDelta(st, ms) {
-  const H = st.oiHist;
-  if (H.length < 2) return null;
-  const target = Date.now() - ms;
-  let ref = null;
-  for (let i = 0; i < H.length; i++) { if (H[i].t <= target) ref = H[i]; else break; }
-  if (!ref) ref = H[0];
-  const c = H[H.length - 1];
-  if (c.t - ref.t < ms * 0.4) return null;
-  return { dOiPct: ((c.oi - ref.oi) / ref.oi) * 100,
-           dPxPct: ((c.px - ref.px) / ref.px) * 100 };
-}
-function regimeRead(d) {
-  if (!d) return { txt: "building history", cls: "dim" };
-  const up = d.dPxPct > 0.05, dn = d.dPxPct < -0.05;
-  const oiUp = d.dOiPct > 0.1, oiDn = d.dOiPct < -0.1;
-  if (dn && oiDn) return { txt: "longs flushing out — positions closing, forced selling is finite", cls: "short" };
-  if (dn && oiUp) return { txt: "shorts stacking in — new positions funding the move down", cls: "long" };
-  if (up && oiDn) return { txt: "shorts covering — squeeze, closes as it runs", cls: "short" };
-  if (up && oiUp) return { txt: "longs building — new positions funding the move up", cls: "long" };
-  if (oiUp) return { txt: "positions building, price flat — leverage accumulating", cls: "warn" };
-  if (oiDn) return { txt: "positions closing, price flat — leverage bleeding off", cls: "dim" };
-  return { txt: "no clear buildup", cls: "dim" };
-}
-
-/* ---------- cascade log ------------------------------------------------- */
-function logLoad(st) {
-  const raw = lsGet("crucible.cascades.v2." + st.cfg.key);
-  if (raw) { try { const j = JSON.parse(raw); if (Array.isArray(j)) st.log.events = j; } catch (e) {} }
-  const th = lsGet("crucible.cascades.v2." + st.cfg.key + ".th");
-  if (th) st.log.threshold = +th || 99;
-}
-function logSave(st) {
-  if (!storageOK) return;
-  while (st.log.events.length > 400) st.log.events.shift();
-  lsSet("crucible.cascades.v2." + st.cfg.key, JSON.stringify(st.log.events));
-  lsSet("crucible.cascades.v2." + st.cfg.key + ".th", String(st.log.threshold));
-}
-function m1CloseAt(st, tsMs) {
-  const pick = arr => {
-    const t = Math.floor(tsMs / 1000);
-    if (!arr.length || t > arr[arr.length - 1].t || t < arr[0].t) return null;
-    let lo = 0, hi = arr.length - 1;
-    while (lo < hi) { const mid = (lo + hi) >> 1; if (arr[mid].t < t) lo = mid + 1; else hi = mid; }
-    return arr[lo].c;
-  };
-  return pick(st.m1) || pick(st.kc);
-}
-function checkTrigger(st) {
-  const t60 = trailing60(st);
-  // An empty window sits below any threshold, so it re-arms. Returning early
-  // without this leaves the trigger latched off after the first cascade.
-  if (!t60.tot) { st.log.armed = true; return; }
-  const sc = baselineScore(st, t60.tot);
-  if (!sc.ready) return;
-  if (sc.pct >= st.log.threshold && st.log.armed) {
-    st.log.armed = false;
-    recordCascade(st, t60, sc);
-  } else if (sc.pct < st.log.threshold - 5) st.log.armed = true;
-}
-function recordCascade(st, t60, sc) {
-  const d15 = oiDelta(st, 9e5);
-  let fsum = 0, fn = 0;
-  for (const k in st.fund) if (st.fund[k]) { fsum += st.fund[k].rate * 10000; fn++; }
-  st.log.events.push({
-    t: Date.now(), px: st.price || null, side: t60.L >= t60.S ? "L" : "S",
-    usd: t60.tot, L: t60.L, S: t60.S, pct: +sc.pct.toFixed(2),
-    z: sc.z == null ? null : +sc.z.toFixed(2),
-    oi15: d15 ? +d15.dOiPct.toFixed(3) : null, fund: fn ? +(fsum / fn).toFixed(3) : null,
-    regime: regimeRead(d15).txt, src: "obs", r5: null, r15: null, r60: null,
-  });
-  logSave(st);
-  if (st.cfg.key !== active) { st.alert = true; paintTabs(); }
-  if (st.cfg.key === active) paintLog();
-}
-function resolveReturns(st) {
-  const now = Date.now();
-  let changed = false;
-  for (const e of st.log.events) {
-    if (!e.px) continue;
-    for (const [name, ms] of HORIZONS) {
-      const key = name === "5m" ? "r5" : name === "15m" ? "r15" : "r60";
-      if (e[key] != null || now < e.t + ms) continue;
-      const p = m1CloseAt(st, e.t + ms);
-      if (p) { e[key] = +(((p - e.px) / e.px) * 100).toFixed(3); changed = true; }
-    }
-  }
-  if (changed) { logSave(st); if (st.cfg.key === active) paintLog(); }
-}
-// Signed so positive always means the reversal worked: after longs are wiped
-// the contrarian trade is long, after shorts are wiped it is short.
-const rev = (e, k) => e[k] == null ? null : (e.side === "L" ? e[k] : -e[k]);
-function logStats(st, filterSide, includeRec) {
-  const evs = st.log.events.filter(e =>
-    (!filterSide || e.side === filterSide) && (includeRec || (e.src || "obs") === "obs"));
-  const out = { n: evs.length, h: {} };
-  for (const [name] of HORIZONS) {
-    const key = name === "5m" ? "r5" : name === "15m" ? "r15" : "r60";
-    const vals = evs.map(e => rev(e, key)).filter(v => v != null);
-    if (!vals.length) { out.h[name] = null; continue; }
-    const sorted = vals.slice().sort((a, b) => a - b);
-    out.h[name] = { n: vals.length, mean: vals.reduce((a, b) => a + b, 0) / vals.length,
-      median: med(sorted), hit: (vals.filter(v => v > 0).length / vals.length) * 100,
-      best: sorted[sorted.length - 1], worst: sorted[0] };
-  }
-  return out;
-}
-
-/* ---------- gap recovery ------------------------------------------------ */
-function gapPlan(ms) {
-  const h = ms / 36e5;
-  if (h <= 15) return { iv: "5min", kl: "5", secs: 300 };
-  if (h <= 48) return { iv: "15min", kl: "15", secs: 900 };
-  if (h <= 190) return { iv: "1h", kl: "60", secs: 3600 };
-  return { iv: "4h", kl: "240", secs: 14400 };
-}
-function humanGap(ms) {
-  const m = Math.round(ms / 6e4);
-  if (m < 90) return m + "m";
-  const h = ms / 36e5;
-  return h < 48 ? h.toFixed(1) + "h" : Math.round(h / 24) + "d";
-}
-function heartbeat() { for (const s of SYMS) lsSet("crucible.lastseen." + s.key, String(Date.now())); }
-async function recoverGap(st) {
-  const key = "crucible.lastseen." + st.cfg.key;
-  const since = +lsGet(key) || 0;
-  lsSet(key, String(Date.now()));
-  if (!since) { st.gapNote = "First run — logging starts now."; paintLog(); return; }
-  const gap = Date.now() - since;
-  if (gap < GAP_MIN) { st.gapNote = ""; paintLog(); return; }
-  const plan = gapPlan(gap);
-  st.gapNote = '<span style="color:var(--warn)">Away ' + humanGap(gap) +
-    ' — rebuilding that window from open interest…</span>';
-  paintLog();
-  try {
-    const sym = st.cfg.bybit;
-    const [oiRes, klRes] = await Promise.all([
-      jget("https://api.bybit.com/v5/market/open-interest?category=linear&symbol=" + sym +
-        "&intervalTime=" + plan.iv + "&limit=200"),
-      jget("https://api.bybit.com/v5/market/kline?category=linear&symbol=" + sym +
-        "&interval=" + plan.kl + "&limit=200"),
-    ]);
-    const oi = ((oiRes.result && oiRes.result.list) || [])
-      .map(r => ({ t: Math.floor(+r.timestamp / 1000), oi: +r.openInterest }))
-      .sort((a, b) => a.t - b.t);
-    st.kc = ((klRes.result && klRes.result.list) || [])
-      .map(r => ({ t: Math.floor(+r[0] / 1000), c: +r[4], o: +r[1] })).sort((a, b) => a.t - b.t);
-    const kMap = new Map(st.kc.map(k => [k.t, k]));
-    const from = Math.floor(since / 1000), to = Math.floor(Date.now() / 1000);
-    const cand = [];
-    for (let i = 1; i < oi.length; i++) {
-      if (oi[i].t < from || oi[i].t > to) continue;
-      const k = kMap.get(oi[i].t);
-      if (!k || !oi[i - 1].oi) continue;
-      cand.push({ t: oi[i].t * 1000,
-        dOi: ((oi[i].oi - oi[i - 1].oi) / oi[i - 1].oi) * 100,
-        dPx: ((k.c - k.o) / k.o) * 100, px: k.c, shed: oi[i - 1].oi - oi[i].oi });
-    }
-    if (!cand.length) {
-      st.gapNote = '<span style="color:var(--dim)">Away ' + humanGap(gap) +
-        ' — no history available for that window.</span>';
-      paintLog(); return;
-    }
-    const drops = cand.map(c => c.dOi).sort((a, b) => a - b);
-    const cut = Math.min(drops[Math.max(0, Math.floor(drops.length * 0.03))], -0.25);
-    const have = new Set(st.log.events.map(e => Math.floor(e.t / plan.secs / 1000)));
-    let added = 0;
-    for (const c of cand) {
-      if (c.dOi > cut || Math.abs(c.dPx) < 0.08) continue;
-      const b = Math.floor(c.t / plan.secs / 1000);
-      if (have.has(b)) continue;
-      have.add(b);
-      st.log.events.push({ t: c.t, px: c.px, side: c.dPx < 0 ? "L" : "S",
-        usd: Math.max(0, c.shed) * c.px, L: 0, S: 0, pct: null, z: null,
-        oi15: +c.dOi.toFixed(3), fund: null, regime: "reconstructed from open interest",
-        src: "rec", r5: null, r15: null, r60: null });
-      added++;
-    }
-    st.log.events.sort((a, b) => a.t - b.t);
-    logSave(st); resolveReturns(st);
-    st.gapNote = 'Away ' + humanGap(gap) + ' — recovered <b>' + added + '</b> likely cascade' +
-      (added === 1 ? "" : "s") + ' from open interest. <span style="color:var(--dim)">' +
-      'Marked as estimated; kept out of the observed stats.</span>';
-  } catch (e) {
-    st.gapNote = '<span style="color:var(--warn)">Away ' + humanGap(gap) +
-      ' — history fetch failed, that window stays blank.</span>';
-  }
-  paintLog();
-}
 
 /* ---------- exchange adapters ------------------------------------------ */
 const EX = {
@@ -1022,15 +627,13 @@ function ingest(e) {
   if (!e.ts || Math.abs(Date.now() - e.ts) > 864e5) e.ts = Date.now();
   st.events.unshift(e);
   if (st.events.length > MAX_EVENTS) st.events.length = MAX_EVENTS;
-  if (!st.biggest || e.usd > st.biggest.usd) st.biggest = e;
   baselineAdd(st, e);
   if (!pendingPaint) { pendingPaint = true; requestAnimationFrame(flush); }
 }
 function flush() {
   pendingPaint = false;
-  const st = cur();
-  if (!st.paused) paintTape();
-  paintStats(); paintContext(); drawOverlay(); paintTabs();
+  refreshScales(cur());
+  drawOverlay(); paintTabs();
 }
 
 /* ---------- market data -------------------------------------------------- */
@@ -1095,12 +698,6 @@ async function refreshTrendGlow() {
   } catch (e) { /* keep whatever glow was already showing */ }
 }
 
-async function loadM1(st) {
-  const j = await jget("https://api.bybit.com/v5/market/kline?category=linear&symbol=" +
-    st.cfg.bybit + "&interval=1&limit=1000");
-  st.m1 = ((j.result && j.result.list) || [])
-    .map(r => ({ t: Math.floor(+r[0] / 1000), c: +r[4] })).sort((a, b) => a.t - b.t);
-}
 async function loadOI(st) {
   const s = st.cfg;
   const jobs = [
@@ -1125,7 +722,6 @@ async function loadOI(st) {
     try { const v = await fn(); if (isFinite(v) && v > 0) st.oi[k] = v; }
     catch (e) { st.oi[k] = null; }
   }));
-  oiRecord(st);
 }
 async function loadCtVal(st) {
   try {
@@ -1139,41 +735,14 @@ async function loadGateMult(st) {
     const v = +j.quanto_multiplier; if (v > 0) st.gateMult = v;
   } catch (e) {}
 }
-async function loadFunding(st) {
-  const s = st.cfg;
-  const jobs = [
-    ["binance", async () => {
-      const j = await jget("https://fapi.binance.com/fapi/v1/premiumIndex?symbol=" + s.bybit);
-      return { rate: +j.lastFundingRate, hours: 8 }; }],
-    ["okx", async () => {
-      const j = await jget("https://www.okx.com/api/v5/public/funding-rate?instId=" + s.okx);
-      const d = j.data[0];
-      const hrs = d.fundingTime && d.nextFundingTime
-        ? Math.round((+d.nextFundingTime - +d.fundingTime) / 36e5) : 8;
-      return { rate: +d.fundingRate, hours: hrs || 8 }; }],
-    ["bitget", async () => {
-      const j = await jget("https://api.bitget.com/api/v2/mix/market/current-fund-rate?symbol=" +
-        s.bitget + "&productType=usdt-futures");
-      const d = Array.isArray(j.data) ? j.data[0] : j.data;
-      return { rate: +d.fundingRate, hours: +d.fundingRateInterval || 8 }; }],
-  ];
-  await Promise.all(jobs.map(async ([k, fn]) => {
-    try { const v = await fn(); if (isFinite(v.rate)) st.fund[k] = v; }
-    catch (e) { if (!st.fund[k]) st.fund[k] = null; }
-  }));
-}
 
 /* ---------- history on open ----------------------------------------------
-   Everything above is collected live, so reopening the app used to start
-   every panel from zero. On open the page now restores:
+   Prints are collected live, so reopening the app would start the chart's
+   liquidation bubbles from nothing. On open the page restores:
    - its own last hour of prints from every venue, saved in this browser;
    - liquidations it missed while closed, from the two venues that publish
      them (OKX, Gate.io — Bybit, Binance and Bitget publish no history, and
-     HTX's endpoint refuses browser requests). These fill the tape and the
-     rolling totals but stay out of the intensity baseline, which only
-     compares like with like when every venue is counted;
-   - open-interest history for Context: Bybit's 5-minute series, scaled to
-     the current all-venue total. */
+     HTX's endpoint refuses browser requests). */
 const KEEP_MS = 36e5;
 const evKey = e => e.exch + ":" + e.ts + ":" + e.side + ":" + Math.round(e.qty * e.price);
 function mergeEvents(st, rows) {
@@ -1185,7 +754,6 @@ function mergeEvents(st, rows) {
     const k = evKey(e);
     if (seen.has(k)) continue;
     seen.add(k); st.events.push(e); added++;
-    if (!st.biggest || e.usd > st.biggest.usd) st.biggest = e;
   }
   if (!added) return 0;
   st.events.sort((a, b) => b.ts - a.ts);
@@ -1226,23 +794,6 @@ async function backfill(st) {
     }).catch(() => {}),
   ]);
   mergeEvents(st, rows);
-  if (rows.some(e => Date.now() - e.ts < KEEP_MS)) st.backfilled = true;
-}
-async function seedOiHist(st) {
-  if (st.oiHist.length > 3) return;
-  const total = Object.values(st.oi).reduce((a, b) => a + (b || 0), 0);
-  if (!total) return;
-  try {
-    const j = await jget("https://api.bybit.com/v5/market/open-interest?category=linear&symbol=" +
-      st.cfg.bybit + "&intervalTime=5min&limit=48");
-    const pts = ((j.result && j.result.list) || []).map(r => ({ t: +r.timestamp, oi: +r.openInterest }))
-      .filter(p => p.oi > 0).sort((a, b) => a.t - b.t);
-    if (pts.length < 2) return;
-    const scale = total / pts[pts.length - 1].oi;
-    const seeded = pts.map(p => ({ t: p.t, oi: p.oi * scale, px: m1CloseAt(st, p.t) })).filter(p => p.px);
-    if (!seeded.length) return;
-    st.oiHist = seeded.concat(st.oiHist.filter(h => h.t > seeded[seeded.length - 1].t));
-  } catch (e) {}
 }
 
 /* ---------- chart --------------------------------------------------------- */
@@ -1302,7 +853,6 @@ function drawOverlay() {
   const norm = st.price || 1;
   for (const e of st.events) {
     if (e.ts <= cutoff) break;
-    if (!st.show[e.exch] || !st.show[e.side] || e.usd < st.minUsd) continue;
     const x = ts.timeToCoordinate(Math.floor(e.ts / 1000));
     const y = series.priceToCoordinate(e.price);
     if (x == null || y == null) continue;
@@ -1325,7 +875,7 @@ function startTicker() {
   const openedAt = Date.now();
   ws.onopen = () => {
     const args = [];
-    for (const s of SYMS) args.push("tickers." + s.bybit, "kline.15." + s.bybit, "kline.1." + s.bybit);
+    for (const s of SYMS) args.push("tickers." + s.bybit, "kline.15." + s.bybit);
     ws.send(JSON.stringify({ op: "subscribe", args }));
     gotAnyMsgAt = Date.now();
     pinger = setInterval(() => ws.readyState === 1 && ws.send(JSON.stringify({ op: "ping" })), 20000);
@@ -1342,22 +892,15 @@ function startTicker() {
       const d = m.data;
       if (d.lastPrice) { st.price = +d.lastPrice; if (sym === active) paintPrice(); queueTabs(); }
       if (d.openInterest && +d.openInterest > 0) { st.oi.bybit = +d.openInterest; st.bybitOiLive = true; }
-      if (d.fundingRate !== undefined && d.fundingRate !== "") st.fund.bybit = { rate: +d.fundingRate, hours: 8 };
     }
     if (parts[0] === "kline" && Array.isArray(m.data)) {
       for (const k of m.data) {
-        if (parts[1] === "1") {
-          const t = Math.floor(+k.start / 1000), last = st.m1[st.m1.length - 1];
-          if (last && last.t === t) last.c = +k.close;
-          else if (!last || t > last.t) { st.m1.push({ t, c: +k.close }); if (st.m1.length > 2000) st.m1.shift(); }
-        } else {
-          const rec = { t: Math.floor(+k.start / 1000), o: +k.open, h: +k.high,
-            l: +k.low, c: +k.close, v: +k.volume };
-          const last = st.candles[st.candles.length - 1];
-          if (last && last.t === rec.t) st.candles[st.candles.length - 1] = rec;
-          else st.candles.push(rec);
-          if (sym === active) series.update({ time: rec.t, open: rec.o, high: rec.h, low: rec.l, close: rec.c });
-        }
+        const rec = { t: Math.floor(+k.start / 1000), o: +k.open, h: +k.high,
+          l: +k.low, c: +k.close, v: +k.volume };
+        const last = st.candles[st.candles.length - 1];
+        if (last && last.t === rec.t) st.candles[st.candles.length - 1] = rec;
+        else st.candles.push(rec);
+        if (sym === active) series.update({ time: rec.t, open: rec.o, high: rec.h, low: rec.l, close: rec.c });
       }
     }
   };
@@ -1423,7 +966,7 @@ function paintTabs() {
     const b = el.children[i], st = ST[s.key];
     const t60 = trailing60(st);
     const nc = nearestCluster(st);
-    b.className = "tab" + (s.key === active ? " on" : "") + (st.alert ? " alert" : "");
+    b.className = "tab" + (s.key === active ? " on" : "");
     b.children[1].textContent = st.price ? fmtPx(st.price, s.dp) : "—";
     b.children[2].textContent = t60.tot ? fmtUsd(t60.tot) : "\u00a0";
     b.children[3].className = "tc" + (nc ? " " + nc.dir : "");
@@ -1452,7 +995,6 @@ function switchTo(sym) {
   try { cur().view = chart.timeScale().getVisibleLogicalRange(); } catch (e) {}
   active = sym;
   const st = cur();
-  st.alert = false;
   syncControls();
   pushCandles();
   // BTC trades near 100k and SOL near 150. If a manual drag on the price
@@ -1464,25 +1006,18 @@ function switchTo(sym) {
     else chart.timeScale().resetTimeScale();
   } catch (e) {}
   refreshScales(st);
-  paintPrice(); paintRail(); paintTape(); paintStats(); paintContext();
-  paintMagnets(); paintLog(); paintTabs();
+  paintPrice(); paintRail(); paintMagnets(); paintTabs();
   requestAnimationFrame(drawOverlay);   // let the new price scale settle first
 }
 
-/* Per-symbol display scales. A $250k print is a whale on SOL and routine on
-   BTC, so thresholds are derived from each symbol's own recent distribution
+/* Per-symbol bubble scale for the chart. A $250k print is a whale on SOL and
+   routine on BTC, so it's derived from each symbol's own recent prints
    rather than from a constant tuned on BTC. */
 function refreshScales(st) {
   const ev = st.events;
-  if (ev.length < 8) { st.bubbleRef = 0; st.bigHit = Infinity; st.usdStep = 1000; return; }
+  if (ev.length < 8) { st.bubbleRef = 0; return; }
   const s = ev.slice(0, 400).map(e => e.usd).sort((a, b) => a - b);
   st.bubbleRef = s[Math.floor(s.length * 0.9)] || s[s.length - 1];
-  st.bigHit = s[Math.floor(s.length * 0.97)] || Infinity;
-  const mid = s[Math.floor(s.length * 0.5)] || 1000;
-  const mag = Math.pow(10, Math.max(1, Math.floor(Math.log10(mid))));
-  st.usdStep = mag;
-  const inp = document.getElementById("minusd");
-  if (inp && st.cfg.key === active) inp.step = mag;
 }
 
 /* ---------- rail ---------------------------------------------------------- */
@@ -1509,154 +1044,7 @@ function paintPrice() {
   document.getElementById("px").innerHTML = fmtPx(st.price, st.cfg.dp) +
     '<small>' + st.cfg.key + 'USDT perp</small>';
 }
-function visible(st) {
-  return st.events.filter(e => st.show[e.exch] && st.show[e.side] && e.usd >= st.minUsd);
-}
-function paintTape() {
-  const st = cur();
-  const rows = visible(st).slice(0, 120);
-  const el = document.getElementById("tape");
-  if (!rows.length) {
-    el.innerHTML = '<div class="empty">Waiting for the first ' + st.cfg.key +
-      ' liquidation.<br>Quiet markets can go minutes without one.</div>';
-    return;
-  }
-  const newest = rows[0].ts;
-  el.innerHTML = rows.map(e =>
-    '<div class="row ' + e.side + (e.ts > st.lastTop ? " new" : "") +
-    (e.usd >= (st.bigHit || Infinity) ? " big-hit" : "") + '">' +
-    '<span class="t">' + hhmmss(e.ts) + '</span>' +
-    '<span class="e">' + EX[e.exch].label + '</span>' +
-    '<span class="sd">' + (e.side === "L" ? "long" : "short") + '</span>' +
-    '<span class="q">' + fmtUsd(e.usd) + '</span>' +
-    '<span class="p">' + fmtPx(e.price, st.cfg.dp) + '</span></div>').join("");
-  st.lastTop = newest;
-}
-const WINDOWS = [["1m", 6e4], ["5m", 3e5], ["15m", 9e5], ["1h", 36e5]];
-function paintStats() {
-  const st = cur(), now = Date.now();
-  refreshScales(st);
-  const ev = st.events.filter(e => st.show[e.exch]);
-  let h = "";
-  for (const [name, ms] of WINDOWS) {
-    let L = 0, Sh = 0;
-    for (const e of ev) { if (now - e.ts > ms) break; e.side === "L" ? L += e.usd : Sh += e.usd; }
-    const tot = L + Sh || 1;
-    h += '<span class="lbl">' + name + '</span>' +
-      '<span class="v" style="color:var(--long)">' + fmtUsd(L) + '</span>' +
-      '<span class="v" style="color:var(--short)">' + fmtUsd(Sh) + '</span>' +
-      '<div class="bar"><span style="width:' + (L / tot * 100) + '%"></span>' +
-      '<span style="width:' + (Sh / tot * 100) + '%"></span></div>';
-    if (name === "1h") {
-      document.getElementById("tot-long").textContent = fmtUsd(L);
-      document.getElementById("tot-short").textContent = fmtUsd(Sh);
-    }
-  }
-  document.getElementById("wins").innerHTML = h;
-  document.getElementById("tot-note").textContent = st.backfilled
-    ? "USD · incl. OKX + Gate.io history" : "USD notional";
-  const b = st.biggest;
-  document.getElementById("biggest").innerHTML = b
-    ? '<span style="color:var(--' + (b.side === "L" ? "long" : "short") + ')">' + fmtUsd(b.usd) +
-      " " + (b.side === "L" ? "long" : "short") + '</span><span style="color:var(--dim)"> · ' +
-      EX[b.exch].label + " · " + fmtPx(b.price, st.cfg.dp) + " · " + hhmmss(b.ts) + '</span>'
-    : "none yet";
-}
 
-/* ---------- context ------------------------------------------------------- */
-function paintContext() {
-  const st = cur();
-  const t60 = trailing60(st), sc = baselineScore(st, t60.tot);
-  const iv = document.getElementById("int-val"), il = document.getElementById("int-lab"),
-        iz = document.getElementById("int-z");
-  iv.textContent = fmtUsd(t60.tot);
-  if (!sc.ready) {
-    iv.style.color = "var(--mid)";
-    il.textContent = "baseline building — " + sc.n + " of " + BASE_MIN_SAMPLE + " min";
-    iz.textContent = "";
-  } else {
-    iv.style.color = t60.tot <= 0 ? "var(--mid)" : sc.pct >= 99 ? "var(--long)"
-      : sc.pct >= 95 ? "var(--warn)" : "var(--bright)";
-    il.textContent = "last 60s · " + sc.pct.toFixed(1) + "th percentile of " + sc.n + " min";
-    iz.innerHTML = sc.typical == null
-      ? '<span style="color:var(--dim)">too few active minutes to size a spread</span>'
-      : "typical active minute " + fmtUsd(sc.typical) +
-        (sc.z == null ? "" : ' <span style="color:var(--dim)">·</span> z ' +
-          (sc.z >= 0 ? "+" : "") + sc.z.toFixed(1)) +
-        ' <span style="color:var(--dim)">·</span> ' + Math.round(sc.quiet * 100) + "% quiet";
-  }
-  document.getElementById("int-split").innerHTML =
-    '<span style="color:var(--long)">' + fmtUsd(t60.L) + ' long</span>' +
-    '<span style="color:var(--dim)"> / </span>' +
-    '<span style="color:var(--short)">' + fmtUsd(t60.S) + ' short</span>';
-  drawSpark();
-
-  const last = st.oiHist.length ? st.oiHist[st.oiHist.length - 1] : null;
-  document.getElementById("oi-val").textContent = last
-    ? Math.round(last.oi).toLocaleString() + " " + st.cfg.key : "—";
-  let rows = "";
-  for (const [name, ms] of [["5m", 3e5], ["15m", 9e5], ["1h", 36e5]]) {
-    const d = oiDelta(st, ms);
-    if (!d) { rows += '<span class="lbl">' + name + '</span>' +
-      '<span class="v" style="color:var(--dim)">—</span><span class="v" style="color:var(--dim)">—</span>'; continue; }
-    rows += '<span class="lbl">' + name + '</span>' +
-      '<span class="v" style="color:' + (d.dOiPct >= 0 ? "var(--warn)" : "var(--mid)") + '">' +
-      (d.dOiPct >= 0 ? "+" : "") + d.dOiPct.toFixed(2) + '% OI</span>' +
-      '<span class="v" style="color:' + (d.dPxPct >= 0 ? "var(--short)" : "var(--long)") + '">' +
-      (d.dPxPct >= 0 ? "+" : "") + d.dPxPct.toFixed(2) + '% px</span>';
-  }
-  document.getElementById("oi-rows").innerHTML = rows;
-  const reg = regimeRead(oiDelta(st, 9e5) || oiDelta(st, 3e5));
-  const re = document.getElementById("oi-regime");
-  re.textContent = reg.txt;
-  re.style.color = reg.cls === "long" ? "var(--long)" : reg.cls === "short" ? "var(--short)"
-    : reg.cls === "warn" ? "var(--warn)" : "var(--dim)";
-
-  let fh = "", sum = 0, cnt = 0;
-  for (const k of ["bybit", "binance", "okx", "bitget"]) {
-    const f = st.fund[k];
-    if (!f) { fh += '<span class="lbl">' + EX[k].label + '</span>' +
-      '<span class="v" style="color:var(--dim)">—</span><span class="v"></span>'; continue; }
-    const bps = f.rate * 10000, annual = f.rate * (24 / (f.hours || 8)) * 365 * 100;
-    sum += bps; cnt++;
-    fh += '<span class="lbl">' + EX[k].label + '</span>' +
-      '<span class="v" style="color:' + (bps > 0.5 ? "var(--long)" : bps < -0.5 ? "var(--short)" : "var(--mid)") +
-      '">' + (bps >= 0 ? "+" : "") + bps.toFixed(2) + ' bp</span>' +
-      '<span class="v" style="color:var(--dim)">' + (annual >= 0 ? "+" : "") + annual.toFixed(0) + '%/yr</span>';
-  }
-  document.getElementById("fund-rows").innerHTML = fh;
-  const fn = document.getElementById("fund-note");
-  if (!cnt) { fn.textContent = "no funding data"; fn.style.color = "var(--dim)"; }
-  else {
-    const avg = sum / cnt;
-    fn.textContent = avg > 1 ? "longs are paying — crowded long"
-      : avg < -1 ? "shorts are paying — crowded short" : "funding near flat — no crowding";
-    fn.style.color = avg > 1 ? "var(--long)" : avg < -1 ? "var(--short)" : "var(--dim)";
-  }
-}
-function drawSpark() {
-  const cv = document.getElementById("spark");
-  if (!cv) return;
-  const st = cur(), dpr = window.devicePixelRatio || 1;
-  const w = cv.clientWidth, h = cv.clientHeight;
-  if (cv.width !== w * dpr) { cv.width = w * dpr; cv.height = h * dpr; }
-  const g = cv.getContext("2d");
-  g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
-  const N = 60, nowM = Math.floor(Date.now() / 6e4);
-  const map = new Map(st.base.done.map(d => [d.m, d]));
-  map.set(st.base.curMin, { L: st.base.curL, S: st.base.curS });
-  const series2 = [];
-  for (let i = N - 1; i >= 0; i--) { const d = map.get(nowM - i); series2.push(d || { L: 0, S: 0 }); }
-  const peak = Math.max.apply(null, series2.map(s => s.L + s.S)) || 1;
-  const bw = w / N;
-  for (let i = 0; i < N; i++) {
-    const s = series2[i], tot = s.L + s.S;
-    if (!tot) continue;
-    const bh = (tot / peak) * (h - 2), lh = (s.L / tot) * bh;
-    g.fillStyle = "rgba(255,81,69,.85)"; g.fillRect(i * bw, h - bh, Math.max(1, bw - 1), lh);
-    g.fillStyle = "rgba(34,211,165,.85)"; g.fillRect(i * bw, h - bh + lh, Math.max(1, bw - 1), bh - lh);
-  }
-}
 
 /* ---------- levels -------------------------------------------------------- */
 function recompute(st, silent) {
@@ -1693,124 +1081,23 @@ function paintMagnets() {
   set("mag-up", n.up, "short");
 }
 
-/* ---------- cascade log painting ------------------------------------------ */
-function paintLog() {
-  const st = cur();
-  document.getElementById("gap-note").innerHTML = st.gapNote || "";
-  const stat = logStats(st, null, st.log.includeRec);
-  const thin = stat.n < 20;
-  document.getElementById("log-count").innerHTML = stat.n
-    ? stat.n + " events" + (thin ? ' <span style="color:var(--warn)">· too few to read anything into</span>' : "")
-    : "no events yet";
-  let sh = "";
-  for (const [name] of HORIZONS) {
-    const h = stat.h[name];
-    if (!h) { sh += '<span class="lbl">' + name + '</span><span class="v" style="color:var(--dim)">pending</span>' +
-      '<span class="v" style="color:var(--dim)">—</span><span class="v" style="color:var(--dim)">—</span>'; continue; }
-    sh += '<span class="lbl">' + name + '</span>' +
-      '<span class="v" style="color:' + (thin ? "var(--dim)" : h.mean > 0 ? "var(--short)" : "var(--long)") +
-      '">' + (h.mean >= 0 ? "+" : "") + h.mean.toFixed(2) + '%</span>' +
-      '<span class="v" style="color:' + (thin ? "var(--dim)" : h.hit >= 55 ? "var(--short)"
-        : h.hit <= 45 ? "var(--long)" : "var(--mid)") + '">' + h.hit.toFixed(0) + '% hit</span>' +
-      '<span class="v" style="color:var(--dim)">n=' + h.n + '</span>';
-  }
-  document.getElementById("log-stats").innerHTML = sh;
-  const rows = st.log.events.filter(e => st.log.includeRec || (e.src || "obs") === "obs")
-    .slice(-14).reverse();
-  const el = document.getElementById("logrows");
-  if (!rows.length) {
-    el.innerHTML = '<div class="empty">Nothing has crossed the ' + st.log.threshold +
-      'th percentile for ' + st.cfg.key + ' yet.<br>Events are stored in this browser.</div>';
-    return;
-  }
-  const cell = v => v == null ? '<span style="color:var(--dim)">·</span>'
-    : '<span style="color:' + (v > 0 ? "var(--short)" : v < 0 ? "var(--long)" : "var(--mid)") + '">' +
-      (v >= 0 ? "+" : "") + v.toFixed(2) + '</span>';
-  el.innerHTML = rows.map(e =>
-    '<div class="lrow ' + e.side + ((e.src || "obs") === "rec" ? " rec" : "") + '">' +
-    '<span class="t">' + new Date(e.t).toLocaleString(undefined,
-      { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) + '</span>' +
-    '<span class="sd">' + (e.side === "L" ? "long" : "short") + '</span>' +
-    '<span class="q">' + fmtUsd(e.usd) +
-      ((e.src || "obs") === "rec" ? '<span class="est" title="reconstructed from open interest">~</span>' : "") +
-      '</span>' +
-    '<span class="q">' + cell(rev(e, "r5")) + '</span>' +
-    '<span class="q">' + cell(rev(e, "r15")) + '</span>' +
-    '<span class="q">' + cell(rev(e, "r60")) + '</span></div>').join("");
-}
-function exportCsv() {
-  const head = ["symbol", "time_iso", "source", "side_liquidated", "notional_usd", "long_usd",
-    "short_usd", "percentile", "robust_z", "price", "oi_delta_15m_pct", "funding_avg_bp",
-    "regime", "ret_5m_pct", "ret_15m_pct", "ret_60m_pct",
-    "reversal_5m_pct", "reversal_15m_pct", "reversal_60m_pct"];
-  const lines = [head.join(",")];
-  for (const s of SYMS) for (const e of ST[s.key].log.events) {
-    lines.push([s.key, new Date(e.t).toISOString(),
-      (e.src || "obs") === "rec" ? "reconstructed" : "observed",
-      e.side === "L" ? "long" : "short", e.usd.toFixed(2), e.L.toFixed(2), e.S.toFixed(2),
-      e.pct == null ? "" : e.pct, e.z == null ? "" : e.z, e.px == null ? "" : e.px,
-      e.oi15 == null ? "" : e.oi15, e.fund == null ? "" : e.fund,
-      '"' + String(e.regime).replace(/"/g, "'") + '"',
-      e.r5 ?? "", e.r15 ?? "", e.r60 ?? "",
-      rev(e, "r5") ?? "", rev(e, "r15") ?? "", rev(e, "r60") ?? ""].join(","));
-  }
-  const blob = new Blob([lines.join("\n")], { type: "text/csv" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "crucible-cascades-" + new Date().toISOString().slice(0, 10) + ".csv";
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-}
 
 /* ---------- controls ------------------------------------------------------ */
 function syncControls() {
   const st = cur();
-  document.querySelectorAll("#filters [data-f]").forEach(el =>
-    el.classList.toggle("on", !!st.show[el.dataset.f]));
-  document.getElementById("minusd").value = st.minUsd || 0;
-  document.getElementById("log-th").value = st.log.threshold;
   document.getElementById("mmr").value = (st.mmr * 100).toFixed(2).replace(/0$/, "");
   document.getElementById("lshare").value = Math.round(st.longShare * 100);
   document.getElementById("lookback").value = st.lookbackDays;
-  const rec = document.getElementById("log-rec");
-  rec.classList.toggle("on", st.log.includeRec);
-  rec.textContent = st.log.includeRec ? "showing estimated" : "observed only";
   const t = document.getElementById("tiers");
   t.innerHTML = st.tiers.map((x, i) => '<span class="lv">' + x.lev + '&times;</span>' +
     '<input type="range" min="0" max="60" value="' + x.w + '" data-t="' + i + '">' +
     '<span class="pc" id="pc' + i + '">' + x.w + '%</span>').join("");
-  const p = document.getElementById("pausebtn");
-  p.textContent = st.paused ? "resume" : "pause";
-  p.classList.toggle("on", !!st.paused);
 }
 function buildControls() {
   document.getElementById("tabs").addEventListener("click", ev => {
     const b = ev.target.closest("[data-sym]"); if (!b) return;
     switchTo(b.dataset.sym);
     showChart();
-  });
-  const f = document.getElementById("filters");
-  f.innerHTML = Object.keys(EX).map(k => '<span class="chip on" data-f="' + k + '">' + EX[k].label + '</span>')
-    .concat('<span class="chip on lg" data-f="L">longs</span>',
-            '<span class="chip on sh" data-f="S">shorts</span>').join("");
-  f.addEventListener("click", ev => {
-    const el = ev.target.closest("[data-f]"); if (!el) return;
-    const st = cur(); st.show[el.dataset.f] = !st.show[el.dataset.f];
-    el.classList.toggle("on", !!st.show[el.dataset.f]);
-    paintTape(); paintStats(); drawOverlay();
-  });
-  document.getElementById("minusd").addEventListener("input", e => {
-    cur().minUsd = +e.target.value || 0; paintTape(); drawOverlay();
-  });
-  document.getElementById("pausebtn").addEventListener("click", e => {
-    const st = cur(); st.paused = !st.paused;
-    e.target.textContent = st.paused ? "resume" : "pause";
-    e.target.classList.toggle("on", st.paused);
-    if (!st.paused) paintTape();
-  });
-  document.getElementById("clearbtn").addEventListener("click", () => {
-    const st = cur(); st.events = []; st.biggest = null; st.lastTop = 0;
-    paintTape(); paintStats(); drawOverlay();
   });
   document.getElementById("modeltoggle").addEventListener("click", e => {
     const a = document.getElementById("assumptions");
@@ -1835,42 +1122,14 @@ function buildControls() {
     st.lookbackDays = Math.max(1, Math.min(14, +e.target.value || 3));
     await loadCandles(st); pushCandles(); recompute(st, true);
   });
-  document.getElementById("log-th").addEventListener("change", e => {
-    const st = cur();
-    st.log.threshold = Math.min(99.9, Math.max(80, +e.target.value || 99));
-    e.target.value = st.log.threshold; st.log.armed = true; logSave(st); paintLog();
-  });
-  document.getElementById("log-rec").addEventListener("click", e => {
-    const st = cur(); st.log.includeRec = !st.log.includeRec;
-    e.target.classList.toggle("on", st.log.includeRec);
-    e.target.textContent = st.log.includeRec ? "showing estimated" : "observed only";
-    paintLog();
-  });
-  document.getElementById("log-csv").addEventListener("click", exportCsv);
-  document.getElementById("log-clear").addEventListener("click", () => {
-    const st = cur();
-    if (!st.log.events.length) return;
-    if (!confirm("Delete all " + st.log.events.length + " logged " + st.cfg.key + " events?")) return;
-    st.log.events = []; logSave(st); paintLog();
-  });
 }
 
 /* ---------- boot ----------------------------------------------------------- */
 async function boot() {
-  for (const s of SYMS) {
-    const st = ST[s.key];
-    // Derived from EX's own keys rather than hardcoded, so a new exchange
-    // added to EX starts visible by default instead of silently hidden
-    // (the filter chip is built from Object.keys(EX) too — see buildControls).
-    st.show = Object.fromEntries(Object.keys(EX).map(k => [k, 1]));
-    st.show.L = 1; st.show.S = 1;
-    st.minUsd = 0; st.paused = false;
-    baselineLoad(st); logLoad(st); eventsLoad(st);
-  }
+  for (const s of SYMS) eventsLoad(ST[s.key]);
   buildControls(); syncControls(); paintTabs(); paintRail();
   initChart();
   for (const s of SYMS) refreshScales(ST[s.key]);
-  paintStats(); paintContext(); paintLog();
 
   for (const k in EX) connect(k);
   startTicker();
@@ -1882,28 +1141,18 @@ async function boot() {
       if (s.key === active) document.getElementById("chartmeta").innerHTML =
         '<span style="color:var(--warn)">candles blocked — check network or region</span>';
     });
-    const m1 = loadM1(st).then(() => { resolveReturns(st); return recoverGap(st); }).catch(() => recoverGap(st));
-    const oi = loadOI(st).then(() => recompute(st, true));
-    Promise.all([m1, oi]).then(() => seedOiHist(st));
-    loadFunding(st);
+    loadOI(st).then(() => recompute(st, true));
   }
 
   setInterval(() => { for (const s of SYMS) loadOI(ST[s.key]); }, 30000);
-  setInterval(() => { for (const s of SYMS) loadFunding(ST[s.key]); }, 60000);
   setInterval(() => { for (const s of SYMS) recompute(ST[s.key]); }, 120000);
-  setInterval(() => { for (const s of SYMS) resolveReturns(ST[s.key]); }, 15000);
-  setInterval(() => { for (const s of SYMS) loadM1(ST[s.key]).catch(() => {}); }, 900000);
-  setInterval(() => {
-    paintStats(); paintRail(); paintContext(); paintTabs();
-    for (const s of SYMS) checkTrigger(ST[s.key]);
-  }, 1000);
-  setInterval(heartbeat, 10000);
+  setInterval(() => { paintRail(); paintTabs(); }, 1000);
   const saveAll = () => { for (const s of SYMS) eventsSave(ST[s.key]); };
   setInterval(saveAll, 30000);
   window.addEventListener("pagehide", saveAll);
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") { for (const s of SYMS) { recoverGap(ST[s.key]); backfill(ST[s.key]); } }
-    else { heartbeat(); saveAll(); }
+    if (document.visibilityState === "visible") { for (const s of SYMS) backfill(ST[s.key]); }
+    else saveAll();
   });
 
   refreshTrendGlow();
