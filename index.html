@@ -400,35 +400,47 @@ const SYMS = [
     bitget: "HYPEUSDT", gate: "HYPE_USDT", htx: "HYPE-USDT", ctVal: 0.1, dp: 3, mmr: 0.01 },
   { key: "SUI", bybit: "SUIUSDT", binance: "suiusdt", okx: "SUI-USDT-SWAP",
     bitget: "SUIUSDT", gate: "SUI_USDT", htx: "SUI-USDT", ctVal: 1, dp: 4, mmr: 0.01 },
-  { key: "ZEC", bybit: "ZECUSDT", binance: "zecusdt", okx: "ZEC-USDT-SWAP",
-    bitget: "ZECUSDT", gate: "ZEC_USDT", htx: "ZEC-USDT", ctVal: 0.01, dp: 2, mmr: 0.01 },
   { key: "ENA", bybit: "ENAUSDT", binance: "enausdt", okx: "ENA-USDT-SWAP",
     bitget: "ENAUSDT", gate: "ENA_USDT", htx: "ENA-USDT", ctVal: 10, dp: 5, mmr: 0.01 },
   { key: "WLD", bybit: "WLDUSDT", binance: "wldusdt", okx: "WLD-USDT-SWAP",
     bitget: "WLDUSDT", gate: "WLD_USDT", htx: "WLD-USDT", ctVal: 1, dp: 4, mmr: 0.01 },
-  /* GALA has no HTX listing (confirmed against HTX's own live contract
-     list — not a lookup mistake). Its htx field is still the naming
-     convention's guess so BY.htx stays populated like every other symbol;
-     since HTX subscribes with one wildcard topic and matches incoming
-     contract_code strings against BY.htx (see htx.parse below), a code
-     that never actually appears in that feed just never matches — GALA's
-     HTX card sits at zero prints permanently, same as a stalled feed,
-     not an error. */
+  /* The rest are the coins TradeBot trades. ctVal is OKX's contract size
+     (fallback only, refreshed live by loadCtVal); dp follows OKX's tick
+     size. HTX doesn't list DYDX, LDO, GALA, KAITO, EGLD, BLUR, SAND, AXS,
+     ZIL or POPCAT: their htx field follows the naming pattern but never
+     matches anything in HTX's feed, so that card just stays at zero
+     prints for them (see htx.parse). */
+  { key: "DYDX", bybit: "DYDXUSDT", binance: "dydxusdt", okx: "DYDX-USDT-SWAP",
+    bitget: "DYDXUSDT", gate: "DYDX_USDT", htx: "DYDX-USDT", ctVal: 1, dp: 5, mmr: 0.01 },
+  { key: "LDO", bybit: "LDOUSDT", binance: "ldousdt", okx: "LDO-USDT-SWAP",
+    bitget: "LDOUSDT", gate: "LDO_USDT", htx: "LDO-USDT", ctVal: 1, dp: 4, mmr: 0.01 },
   { key: "GALA", bybit: "GALAUSDT", binance: "galausdt", okx: "GALA-USDT-SWAP",
     bitget: "GALAUSDT", gate: "GALA_USDT", htx: "GALA-USDT", ctVal: 10, dp: 6, mmr: 0.01 },
-  { key: "ONDO", bybit: "ONDOUSDT", binance: "ondousdt", okx: "ONDO-USDT-SWAP",
-    bitget: "ONDOUSDT", gate: "ONDO_USDT", htx: "ONDO-USDT", ctVal: 10, dp: 4, mmr: 0.01 },
-  /* PEPE trades as 1000PEPE on Bybit and Binance (one unit = 1000 PEPE,
-     priced per 1000) but as plain PEPE on OKX, Bitget, Gate and HTX. The
-     page runs on Bybit's scale, so unit: 1000 converts prints and open
-     interest from the plain-PEPE venues to it (see ingest and loadOI). */
-  { key: "PEPE", bybit: "1000PEPEUSDT", binance: "1000pepeusdt", okx: "PEPE-USDT-SWAP",
-    bitget: "PEPEUSDT", gate: "PEPE_USDT", htx: "PEPE-USDT", ctVal: 10000000, dp: 7, mmr: 0.01, unit: 1000 },
+  { key: "KAITO", bybit: "KAITOUSDT", binance: "kaitousdt", okx: "KAITO-USDT-SWAP",
+    bitget: "KAITOUSDT", gate: "KAITO_USDT", htx: "KAITO-USDT", ctVal: 1, dp: 4, mmr: 0.01 },
+  { key: "FARTCOIN", bybit: "FARTCOINUSDT", binance: "fartcoinusdt", okx: "FARTCOIN-USDT-SWAP",
+    bitget: "FARTCOINUSDT", gate: "FARTCOIN_USDT", htx: "FARTCOIN-USDT", ctVal: 1, dp: 4, mmr: 0.01 },
+  { key: "EGLD", bybit: "EGLDUSDT", binance: "egldusdt", okx: "EGLD-USDT-SWAP",
+    bitget: "EGLDUSDT", gate: "EGLD_USDT", htx: "EGLD-USDT", ctVal: 0.1, dp: 3, mmr: 0.01 },
+  { key: "NEAR", bybit: "NEARUSDT", binance: "nearusdt", okx: "NEAR-USDT-SWAP",
+    bitget: "NEARUSDT", gate: "NEAR_USDT", htx: "NEAR-USDT", ctVal: 10, dp: 3, mmr: 0.01 },
+  { key: "XLM", bybit: "XLMUSDT", binance: "xlmusdt", okx: "XLM-USDT-SWAP",
+    bitget: "XLMUSDT", gate: "XLM_USDT", htx: "XLM-USDT", ctVal: 100, dp: 5, mmr: 0.01 },
+  { key: "BLUR", bybit: "BLURUSDT", binance: "blurusdt", okx: "BLUR-USDT-SWAP",
+    bitget: "BLURUSDT", gate: "BLUR_USDT", htx: "BLUR-USDT", ctVal: 10, dp: 5, mmr: 0.01 },
+  { key: "SAND", bybit: "SANDUSDT", binance: "sandusdt", okx: "SAND-USDT-SWAP",
+    bitget: "SANDUSDT", gate: "SAND_USDT", htx: "SAND-USDT", ctVal: 10, dp: 5, mmr: 0.01 },
+  { key: "AXS", bybit: "AXSUSDT", binance: "axsusdt", okx: "AXS-USDT-SWAP",
+    bitget: "AXSUSDT", gate: "AXS_USDT", htx: "AXS-USDT", ctVal: 0.1, dp: 4, mmr: 0.01 },
+  { key: "ZIL", bybit: "ZILUSDT", binance: "zilusdt", okx: "ZIL-USDT-SWAP",
+    bitget: "ZILUSDT", gate: "ZIL_USDT", htx: "ZIL-USDT", ctVal: 100, dp: 6, mmr: 0.01 },
+  { key: "TRX", bybit: "TRXUSDT", binance: "trxusdt", okx: "TRX-USDT-SWAP",
+    bitget: "TRXUSDT", gate: "TRX_USDT", htx: "TRX-USDT", ctVal: 1000, dp: 5, mmr: 0.01 },
+  { key: "CHZ", bybit: "CHZUSDT", binance: "chzusdt", okx: "CHZ-USDT-SWAP",
+    bitget: "CHZUSDT", gate: "CHZ_USDT", htx: "CHZ-USDT", ctVal: 10, dp: 5, mmr: 0.01 },
+  { key: "POPCAT", bybit: "POPCATUSDT", binance: "popcatusdt", okx: "POPCAT-USDT-SWAP",
+    bitget: "POPCATUSDT", gate: "POPCAT_USDT", htx: "POPCAT-USDT", ctVal: 10, dp: 5, mmr: 0.01 },
 ];
-/* venues that list a unit-scaled coin (cfg.unit) in those same units */
-const unitScaled = (exch) => exch === "bybit" || exch === "binance";
-/* what a quantity is counted in on the page: "PEPE" -> "1000PEPE" */
-const unitName = (cfg) => (cfg.unit || "") + cfg.key;
 const BY = { bybit: {}, binance: {}, okx: {}, bitget: {}, gate: {}, htx: {} };
 for (const s of SYMS) {
   BY.bybit[s.bybit] = s.key; BY.binance[s.bybit] = s.key;
@@ -999,8 +1011,6 @@ let pendingPaint = false;
 function ingest(e) {
   const st = ST[e.sym];
   if (!st || !e.qty || !e.price || !isFinite(e.qty) || !isFinite(e.price)) return;
-  const u = st.cfg.unit;
-  if (u && !unitScaled(e.exch)) { e.price *= u; e.qty /= u; }   /* same USD, Bybit's units */
   e.usd = e.qty * e.price;
   if (!e.ts || Math.abs(Date.now() - e.ts) > 864e5) e.ts = Date.now();
   st.events.unshift(e);
@@ -1105,7 +1115,7 @@ async function loadOI(st) {
       return +(d.size || d.amount); }],
   ];
   await Promise.all(jobs.map(async ([k, fn]) => {
-    try { const v = await fn(); if (isFinite(v) && v > 0) st.oi[k] = st.cfg.unit && !unitScaled(k) ? v / st.cfg.unit : v; }
+    try { const v = await fn(); if (isFinite(v) && v > 0) st.oi[k] = v; }
     catch (e) { st.oi[k] = null; }
   }));
   oiRecord(st);
@@ -1241,7 +1251,7 @@ function startTicker() {
     const st = ST[sym];
     if (parts[0] === "tickers" && m.data) {
       const d = m.data;
-      if (d.lastPrice) { st.price = +d.lastPrice; if (sym === active) paintPrice(); paintTabs(); }
+      if (d.lastPrice) { st.price = +d.lastPrice; if (sym === active) paintPrice(); queueTabs(); }
       if (d.openInterest && +d.openInterest > 0) { st.oi.bybit = +d.openInterest; st.bybitOiLive = true; }
       if (d.fundingRate !== undefined && d.fundingRate !== "") st.fund.bybit = { rate: +d.fundingRate, hours: 8 };
     }
@@ -1301,20 +1311,33 @@ function nearestCluster(st) {
 }
 
 /* ---------- tabs ---------------------------------------------------------- */
+/* Tabs are built once and updated in place — rebuilding all 25 buttons on
+   every ticker message replaced them under the finger mid-tap. Ticker
+   updates only queue a repaint (queueTabs), a few per second at most. */
+let tabsQueued = false;
+function queueTabs() {
+  if (tabsQueued) return;
+  tabsQueued = true;
+  setTimeout(paintTabs, 300);
+}
 function paintTabs() {
+  tabsQueued = false;
   const el = document.getElementById("tabs");
-  el.innerHTML = SYMS.map(s => {
-    const st = ST[s.key];
+  if (el.children.length !== SYMS.length) {
+    el.innerHTML = SYMS.map(s => '<button class="tab" data-sym="' + s.key + '">' +
+      '<span class="tk">' + s.key + '</span><span class="tp">—</span>' +
+      '<span class="tl">&nbsp;</span><span class="tc"></span></button>').join("");
+  }
+  SYMS.forEach((s, i) => {
+    const b = el.children[i], st = ST[s.key];
     const t60 = trailing60(st);
     const nc = nearestCluster(st);
-    return '<button class="tab' + (s.key === active ? " on" : "") +
-      (st.alert ? " alert" : "") + '" data-sym="' + s.key + '">' +
-      '<span class="tk">' + s.key + '</span>' +
-      '<span class="tp">' + (st.price ? fmtPx(st.price, s.dp) : "—") + '</span>' +
-      (t60.tot ? '<span class="tl">' + fmtUsd(t60.tot) + '</span>' : '<span class="tl">&nbsp;</span>') +
-      (nc ? '<span class="tc ' + nc.dir + '">' + fmtPx(nc.price, s.dp) + ' cluster</span>' : '') +
-      '</button>';
-  }).join("");
+    b.className = "tab" + (s.key === active ? " on" : "") + (st.alert ? " alert" : "");
+    b.children[1].textContent = st.price ? fmtPx(st.price, s.dp) : "—";
+    b.children[2].textContent = t60.tot ? fmtUsd(t60.tot) : "\u00a0";
+    b.children[3].className = "tc" + (nc ? " " + nc.dir : "");
+    b.children[3].textContent = nc ? fmtPx(nc.price, s.dp) + " cluster" : "";
+  });
 }
 function switchTo(sym) {
   if (sym === active) return;
@@ -1378,7 +1401,7 @@ function paintRail() {
 function paintPrice() {
   const st = cur();
   document.getElementById("px").innerHTML = fmtPx(st.price, st.cfg.dp) +
-    '<small>' + unitName(st.cfg) + 'USDT perp</small>';
+    '<small>' + st.cfg.key + 'USDT perp</small>';
 }
 function visible(st) {
   return st.events.filter(e => st.show[e.exch] && st.show[e.side] && e.usd >= st.minUsd);
@@ -1462,7 +1485,7 @@ function paintContext() {
 
   const last = st.oiHist.length ? st.oiHist[st.oiHist.length - 1] : null;
   document.getElementById("oi-val").textContent = last
-    ? Math.round(last.oi).toLocaleString() + " " + unitName(st.cfg) : "—";
+    ? Math.round(last.oi).toLocaleString() + " " + st.cfg.key : "—";
   let rows = "";
   for (const [name, ms] of [["5m", 3e5], ["15m", 9e5], ["1h", 36e5]]) {
     const d = oiDelta(st, ms);
@@ -1543,7 +1566,7 @@ function paintOiLine() {
   const got = Object.keys(st.oi).filter(k => st.oi[k]);
   document.getElementById("oiline").innerHTML = total
     ? '<span style="color:var(--mid)">open interest ' +
-      total.toLocaleString(undefined, { maximumFractionDigits: 0 }) + " " + unitName(st.cfg) +
+      total.toLocaleString(undefined, { maximumFractionDigits: 0 }) + " " + st.cfg.key +
       '</span> <span style="color:var(--dim)">(' + got.join(", ") + ')</span>'
     : '<span style="color:var(--warn)">open interest unavailable — levels show relative shape only</span>';
 }
@@ -1555,7 +1578,7 @@ function paintMagnets() {
     v.textContent = fmtPx(bin.price, st.cfg.dp);
     const pct = ((bin.price - p) / p) * 100;
     d.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%  ·  ~" +
-      bin[key].toFixed(bin[key] < 100 ? 1 : 0) + " " + unitName(st.cfg) + " clustered";
+      bin[key].toFixed(bin[key] < 100 ? 1 : 0) + " " + st.cfg.key + " clustered";
   };
   const n = nearestClusters(st);
   set("mag-dn", n.dn, "long");
