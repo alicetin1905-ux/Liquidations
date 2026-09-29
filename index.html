@@ -243,7 +243,7 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
 
 <div class="grid2">
   <div class="panel" style="margin-bottom:0">
-    <div class="phead"><b>Rolling totals</b><span style="margin-left:auto;color:var(--dim)">USD notional</span></div>
+    <div class="phead"><b>Rolling totals</b><span style="margin-left:auto;color:var(--dim)" id="tot-note">USD notional</span></div>
     <div class="pbody">
       <div class="grid2" style="margin-bottom:12px">
         <div><div class="big" id="tot-long" style="color:var(--long)">$0</div>
@@ -1163,6 +1163,88 @@ async function loadFunding(st) {
   }));
 }
 
+/* ---------- history on open ----------------------------------------------
+   Everything above is collected live, so reopening the app used to start
+   every panel from zero. On open the page now restores:
+   - its own last hour of prints from every venue, saved in this browser;
+   - liquidations it missed while closed, from the two venues that publish
+     them (OKX, Gate.io — Bybit, Binance and Bitget publish no history, and
+     HTX's endpoint refuses browser requests). These fill the tape and the
+     rolling totals but stay out of the intensity baseline, which only
+     compares like with like when every venue is counted;
+   - open-interest history for Context: Bybit's 5-minute series, scaled to
+     the current all-venue total. */
+const KEEP_MS = 36e5;
+const evKey = e => e.exch + ":" + e.ts + ":" + e.side + ":" + Math.round(e.qty * e.price);
+function mergeEvents(st, rows) {
+  const now = Date.now(), seen = new Set(st.events.map(evKey));
+  let added = 0;
+  for (const e of rows) {
+    if (!e.qty || !e.price || !isFinite(e.qty) || !isFinite(e.price) || now - e.ts > KEEP_MS) continue;
+    e.usd = e.qty * e.price;
+    const k = evKey(e);
+    if (seen.has(k)) continue;
+    seen.add(k); st.events.push(e); added++;
+    if (!st.biggest || e.usd > st.biggest.usd) st.biggest = e;
+  }
+  if (!added) return 0;
+  st.events.sort((a, b) => b.ts - a.ts);
+  if (st.events.length > MAX_EVENTS) st.events.length = MAX_EVENTS;
+  if (!pendingPaint) { pendingPaint = true; requestAnimationFrame(flush); }
+  return added;
+}
+function eventsSave(st) {
+  const keep = [];
+  for (const e of st.events) { if (Date.now() - e.ts > KEEP_MS || keep.length >= 500) break; keep.push([e.ts, e.exch, e.side, e.qty, e.price]); }
+  lsSet("crucible.events." + st.cfg.key, JSON.stringify(keep));
+}
+function eventsLoad(st) {
+  try {
+    const j = JSON.parse(lsGet("crucible.events." + st.cfg.key) || "[]");
+    mergeEvents(st, j.filter(r => EX[r[1]]).map(r => ({ sym: st.cfg.key, ts: r[0], exch: r[1], side: r[2], qty: r[3], price: r[4] })));
+  } catch (e) {}
+}
+async function backfill(st) {
+  const since = Date.now() - KEEP_MS, rows = [];
+  await Promise.all([
+    jget("https://www.okx.com/api/v5/public/liquidation-orders?instType=SWAP&uly=" + st.cfg.key +
+      "-USDT&state=filled&limit=100").then(j => {
+      for (const blk of j.data || []) {
+        if (blk.instId !== st.cfg.okx) continue;
+        for (const d of blk.details || []) rows.push({ sym: st.cfg.key, ts: +d.ts, exch: "okx",
+          side: d.posSide === "long" ? "L" : d.posSide === "short" ? "S" : d.side === "sell" ? "L" : "S",
+          qty: +d.sz * st.ctVal, price: +d.bkPx });
+      }
+    }).catch(() => {}),
+    jget("https://api.gateio.ws/api/v4/futures/usdt/liq_orders?contract=" + st.cfg.gate +
+      "&from=" + Math.floor(since / 1000) + "&limit=1000").then(j => {
+      for (const d of Array.isArray(j) ? j : []) {
+        const raw = +d.size;   // contracts, negative = a short position
+        rows.push({ sym: st.cfg.key, ts: +d.time * 1000, exch: "gate", side: raw < 0 ? "S" : "L",
+          qty: Math.abs(raw) * st.gateMult, price: +d.fill_price });
+      }
+    }).catch(() => {}),
+  ]);
+  mergeEvents(st, rows);
+  if (rows.some(e => Date.now() - e.ts < KEEP_MS)) st.backfilled = true;
+}
+async function seedOiHist(st) {
+  if (st.oiHist.length > 3) return;
+  const total = Object.values(st.oi).reduce((a, b) => a + (b || 0), 0);
+  if (!total) return;
+  try {
+    const j = await jget("https://api.bybit.com/v5/market/open-interest?category=linear&symbol=" +
+      st.cfg.bybit + "&intervalTime=5min&limit=48");
+    const pts = ((j.result && j.result.list) || []).map(r => ({ t: +r.timestamp, oi: +r.openInterest }))
+      .filter(p => p.oi > 0).sort((a, b) => a.t - b.t);
+    if (pts.length < 2) return;
+    const scale = total / pts[pts.length - 1].oi;
+    const seeded = pts.map(p => ({ t: p.t, oi: p.oi * scale, px: m1CloseAt(st, p.t) })).filter(p => p.px);
+    if (!seeded.length) return;
+    st.oiHist = seeded.concat(st.oiHist.filter(h => h.t > seeded[seeded.length - 1].t));
+  } catch (e) {}
+}
+
 /* ---------- chart --------------------------------------------------------- */
 let chart, series, overlay, ctx;
 function initChart() {
@@ -1471,6 +1553,8 @@ function paintStats() {
     }
   }
   document.getElementById("wins").innerHTML = h;
+  document.getElementById("tot-note").textContent = st.backfilled
+    ? "USD · incl. OKX + Gate.io history" : "USD notional";
   const b = st.biggest;
   document.getElementById("biggest").innerHTML = b
     ? '<span style="color:var(--' + (b.side === "L" ? "long" : "short") + ')">' + fmtUsd(b.usd) +
@@ -1781,7 +1865,7 @@ async function boot() {
     st.show = Object.fromEntries(Object.keys(EX).map(k => [k, 1]));
     st.show.L = 1; st.show.S = 1;
     st.minUsd = 0; st.paused = false;
-    baselineLoad(st); logLoad(st);
+    baselineLoad(st); logLoad(st); eventsLoad(st);
   }
   buildControls(); syncControls(); paintTabs(); paintRail();
   initChart();
@@ -1793,14 +1877,14 @@ async function boot() {
 
   for (const s of SYMS) {
     const st = ST[s.key];
-    loadCtVal(st);
-    loadGateMult(st);
+    Promise.all([loadCtVal(st), loadGateMult(st)]).then(() => backfill(st));
     loadCandles(st).then(() => { if (s.key === active) pushCandles(); }).catch(() => {
       if (s.key === active) document.getElementById("chartmeta").innerHTML =
         '<span style="color:var(--warn)">candles blocked — check network or region</span>';
     });
-    loadM1(st).then(() => { resolveReturns(st); return recoverGap(st); }).catch(() => recoverGap(st));
-    loadOI(st).then(() => recompute(st, true));
+    const m1 = loadM1(st).then(() => { resolveReturns(st); return recoverGap(st); }).catch(() => recoverGap(st));
+    const oi = loadOI(st).then(() => recompute(st, true));
+    Promise.all([m1, oi]).then(() => seedOiHist(st));
     loadFunding(st);
   }
 
@@ -1814,9 +1898,12 @@ async function boot() {
     for (const s of SYMS) checkTrigger(ST[s.key]);
   }, 1000);
   setInterval(heartbeat, 10000);
+  const saveAll = () => { for (const s of SYMS) eventsSave(ST[s.key]); };
+  setInterval(saveAll, 30000);
+  window.addEventListener("pagehide", saveAll);
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") { for (const s of SYMS) recoverGap(ST[s.key]); }
-    else heartbeat();
+    if (document.visibilityState === "visible") { for (const s of SYMS) { recoverGap(ST[s.key]); backfill(ST[s.key]); } }
+    else { heartbeat(); saveAll(); }
   });
 
   refreshTrendGlow();
