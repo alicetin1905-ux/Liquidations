@@ -423,7 +423,9 @@ const EX = {
   },
   binance: {
     label: "Binance",
-    url: "wss://fstream.binance.com/stream?streams=" +
+    // Binance moved its futures market streams (liquidations included) under
+    // /market — the old root path still accepts the socket but sends nothing.
+    url: "wss://fstream.binance.com/market/stream?streams=" +
       SYMS.map(s => s.binance + "@forceOrder").join("/"),
     sub: null, ping: null, pingMs: 0, note: "1/sec aggregated",
     geo: "Binance Futures is blocked across the EU under MiCA. Nothing in the " +
@@ -509,7 +511,8 @@ const EX = {
         const raw = +d.size, price = +d.price;
         if (!isFinite(raw) || !raw || !isFinite(price) || !price) continue;
         const mult = ST[sym] ? ST[sym].gateMult : 1;
-        out.push({ sym, ts: +d.time_ms || (+d.time * 1000) || Date.now(), exch: "gate",
+        const t = +d.time_ms || +d.time;   // result.time is milliseconds (was seconds once)
+        out.push({ sym, ts: t > 1e12 ? t : t * 1000 || Date.now(), exch: "gate",
           side: raw < 0 ? "S" : "L", qty: Math.abs(raw) * mult, price });
       }
       return out;
@@ -521,8 +524,15 @@ const EX = {
     // same "subscribe once, filter client-side to our 6 symbols" shape as
     // the other exchanges above.
     sub: () => JSON.stringify({ op: "sub", cid: "crucible-" + Date.now(), topic: "public.*.liquidation_orders" }),
-    // No confirmed ping requirement for this public topic — see the same
-    // note on Gate.io above; relying on the silent-connection watchdog.
+    // Every HTX frame is gzip-compressed binary, and the server sends
+    // {op:"ping",ts} heartbeats that must be answered with {op:"pong",ts} or
+    // it drops the connection — see gzip/onPing in connect().
+    gzip: true,
+    onPing(m, ws) {
+      if (!m || m.op !== "ping") return false;
+      ws.send(JSON.stringify({ op: "pong", ts: m.ts }));
+      return true;
+    },
     ping: null, pingMs: 0,
     parse(m) {
       if (!m || m.op !== "notify" || !m.topic || m.topic.indexOf("liquidation_orders") < 0 || !Array.isArray(m.data)) return [];
@@ -558,6 +568,7 @@ function connect(key) {
   let ws;
   try { ws = new WebSocket(def.url); }
   catch (e) { c.state = "err"; c.err = "blocked"; paintRail(); return retry(key); }
+  if (def.gzip) ws.binaryType = "arraybuffer";
   let pinger = 0, staleWatch = 0, staleKicked = false, gotAnyMsgAt = 0;
   const openedAt = Date.now();
   ws.onopen = () => {
@@ -567,12 +578,18 @@ function connect(key) {
     if (def.sub) ws.send(def.sub());
     if (def.ping) pinger = setInterval(() => { if (ws.readyState === 1) ws.send(def.ping()); }, def.pingMs);
   };
-  ws.onmessage = ev => {
+  ws.onmessage = async ev => {
     gotAnyMsgAt = Date.now();
-    if (typeof ev.data === "string" && (ev.data === "pong" || ev.data === "ping")) return;
-    let m; try { m = JSON.parse(ev.data); } catch (e) { return; }
-    if (m && (m.event === "error" || m.success === false)) {
-      logRaw(key + " rejected: " + ev.data.slice(0, 220)); c.err = "sub rejected"; paintRail(); return;
+    let data = ev.data;
+    if (data instanceof ArrayBuffer) {
+      try { data = await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream("gzip"))).text(); }
+      catch (e) { return; }
+    }
+    if (typeof data === "string" && (data === "pong" || data === "ping")) return;
+    let m; try { m = JSON.parse(data); } catch (e) { return; }
+    if (def.onPing && def.onPing(m, ws)) return;
+    if (m && (m.event === "error" || m.success === false || (m["err-code"] && m["err-code"] !== 0))) {
+      logRaw(key + " rejected: " + String(data).slice(0, 220)); c.err = "sub rejected"; paintRail(); return;
     }
     if (m && (m.event === "subscribe" || m.op === "subscribe")) { logRaw(key + " subscribed ok"); return; }
     let rows = [];
