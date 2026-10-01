@@ -335,8 +335,12 @@ function liqPrice(entry, lev, mmr, isLong) {
 function buildLevels(candles, opts) {
   const { levTiers, mmr = 0.005, longShare = 0.5, bins = 220, oiBase = 0 } = opts;
   if (!candles.length) return { bins: [], lo: 0, hi: 0, step: 0 };
-  const wSum = levTiers.reduce((a, t) => a + t.w, 0) || 1;
-  const tiers = levTiers.filter(t => t.w > 0).map(t => ({ lev: t.lev, w: t.w / wSum }));
+  // A tier whose margin (1/lev) doesn't exceed the maintenance rate can't be
+  // opened (e.g. 100x at 1% maintenance would liquidate at its own entry),
+  // so it's left out instead of piling fake levels onto the current price.
+  const valid = levTiers.filter(t => t.w > 0 && 1 / t.lev > mmr);
+  const wSum = valid.reduce((a, t) => a + t.w, 0) || 1;
+  const tiers = valid.map(t => ({ lev: t.lev, w: t.w / wSum }));
   if (!tiers.length) return { bins: [], lo: 0, hi: 0, step: 0 };
   const minLev = Math.min.apply(null, tiers.map(t => t.lev));
   const lo = Math.min.apply(null, candles.map(c => c.l)) * (1 - 1 / minLev) * 0.99;
@@ -373,7 +377,9 @@ function buildLevels(candles, opts) {
   }
   let tot = 0;
   for (let i = 0; i < bins; i++) tot += longBins[i] + shortBins[i];
-  const k = tot > 0 && oiBase > 0 ? oiBase / tot : 1;
+  // Every open contract has a long and a short side, so each side holds the
+  // full open interest: longs + shorts = 2 x OI.
+  const k = tot > 0 && oiBase > 0 ? 2 * oiBase / tot : 1;
   const out = [];
   for (let i = 0; i < bins; i++)
     out.push({ price: lo + step * (i + 0.5), long: longBins[i] * k, short: shortBins[i] * k });
