@@ -965,19 +965,27 @@ function startTicker() {
   }, 10000);
 }
 
-/* The nearest real cluster on each side: walking away from price, the first
-   level holding at least CLUSTER_MIN_SHARE of that side's biggest one (so
-   specks don't count), then on to the peak of that cluster. */
-const CLUSTER_MIN_SHARE = 1 / 3;
+/* The nearest real cluster on each side. The model's bins are thin (~0.1%)
+   and spiky, so each side is judged on a smoothed profile (the amount within
+   ±CLUSTER_SMOOTH_PCT of each level): walking away from price, the first
+   level holding at least CLUSTER_MIN_SHARE of that side's biggest, then on
+   to the peak of that cluster. Its amount is the smoothed total there. */
+const CLUSTER_MIN_SHARE = 1 / 3, CLUSTER_SMOOTH_PCT = 0.5;
 function nearestClusters(st) {
-  if (!st.levels || !st.price) return { dn: null, up: null };
+  if (!st.levels || !st.price || !st.levels.step) return { dn: null, up: null };
+  const w = Math.max(1, Math.round(st.price * CLUSTER_SMOOTH_PCT / 100 / st.levels.step));
   const pick = (side, k) => {          // side: bins ordered moving away from price
     if (!side.length) return null;
-    const min = Math.max.apply(null, side.map(b => b[k])) * CLUSTER_MIN_SHARE;
-    let i = side.findIndex(b => b[k] > 0 && b[k] >= min);
+    const sm = side.map((_, i) => {
+      let a = 0;
+      for (let j = Math.max(0, i - w); j <= Math.min(side.length - 1, i + w); j++) a += side[j][k];
+      return a;
+    });
+    const min = Math.max.apply(null, sm) * CLUSTER_MIN_SHARE;
+    let i = sm.findIndex(x => x > 0 && x >= min);
     if (i < 0) return null;
-    while (i + 1 < side.length && side[i + 1][k] > side[i][k]) i++;
-    return side[i];
+    while (i + 1 < sm.length && sm[i + 1] > sm[i]) i++;
+    return { price: side[i].price, [k]: sm[i] };
   };
   return {
     dn: pick(st.levels.bins.filter(b => b.price < st.price).reverse(), "long"),
