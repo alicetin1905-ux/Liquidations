@@ -126,7 +126,9 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
 .mag .h{font-size:10.5px;color:var(--dim)}
 .estmark{color:var(--model);font-size:9px;border:1px solid var(--model);border-radius:2px;
   padding:0 3px;margin-left:3px;vertical-align:1px;opacity:.8}
-.mag .v{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums;margin-top:2px}
+.mag .v{font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+.mag .row{display:flex;align-items:baseline;gap:7px;margin-top:6px}
+.mag .k{font-size:10px;color:var(--dim);min-width:44px;text-transform:uppercase;letter-spacing:.04em}
 .mag .d{font-size:10.5px;color:var(--mid);font-variant-numeric:tabular-nums}
 
 #raw{max-height:130px;overflow-y:auto;font-size:10px;color:var(--dim);
@@ -166,12 +168,16 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
   </div>
   <div id="chartwrap"><div id="chart"></div><canvas id="overlay"></canvas></div>
   <div class="magnets">
-    <div class="mag"><div class="h">biggest cluster below <span class="estmark">est</span></div>
-      <div class="v" id="mag-dn" style="color:var(--long)">—</div>
-      <div class="d" id="mag-dn-d"></div></div>
-    <div class="mag"><div class="h">biggest cluster above <span class="estmark">est</span></div>
-      <div class="v" id="mag-up" style="color:var(--short)">—</div>
-      <div class="d" id="mag-up-d"></div></div>
+    <div class="mag"><div class="h">clusters below <span class="estmark">est</span></div>
+      <div class="row"><span class="k">nearest</span><span class="v" id="mag-dn-near" style="color:var(--long)">—</span></div>
+      <div class="d" id="mag-dn-near-d"></div>
+      <div class="row"><span class="k">biggest</span><span class="v" id="mag-dn-big" style="color:var(--long)">—</span></div>
+      <div class="d" id="mag-dn-big-d"></div></div>
+    <div class="mag"><div class="h">clusters above <span class="estmark">est</span></div>
+      <div class="row"><span class="k">nearest</span><span class="v" id="mag-up-near" style="color:var(--short)">—</span></div>
+      <div class="d" id="mag-up-near-d"></div>
+      <div class="row"><span class="k">biggest</span><span class="v" id="mag-up-big" style="color:var(--short)">—</span></div>
+      <div class="d" id="mag-up-big-d"></div></div>
   </div>
 </div>
 
@@ -184,7 +190,7 @@ input[type=number]{font-family:inherit;font-size:12px;background:var(--panel2);
       splits it across the leverage mix below, computes each cohort's exact liquidation price, then
       discards any cohort whose level price already traded through. Change the assumptions and the
       picture changes — treat it as a map of where stops likely cluster, not as fact.
-      The biggest cluster on each side reads out right below the chart.</div>
+      The nearest and the biggest cluster on each side read out right below the chart.</div>
 
     <div id="assumptions" style="display:none;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">
       <div style="font-size:11px;color:var(--dim);margin-bottom:8px">Leverage mix — share of open interest at each tier</div>
@@ -965,28 +971,40 @@ function startTicker() {
   }, 10000);
 }
 
-/* The biggest cluster on each side of price. The model's bins are thin
-   (~0.1%) and spiky, so each side is judged on a smoothed profile (the
-   amount within ±CLUSTER_SMOOTH_PCT of each level) and the readout is that
-   profile's peak; its amount is the smoothed total there. These are the
-   main bands (mostly the 10x cohort), typically several % from price. */
-const CLUSTER_SMOOTH_PCT = 0.5;
-function biggestClusters(st) {
-  if (!st.levels || !st.price || !st.levels.step) return { dn: null, up: null };
+/* Clusters on each side of price. The model's bins are thin (~0.1%) and
+   spiky, so each side is judged on a smoothed profile (the amount within
+   ±CLUSTER_SMOOTH_PCT of each level); a cluster's amount is the smoothed
+   total at its peak.
+   - biggest: that profile's peak — the main band (mostly the 10x cohort),
+     typically several % from price.
+   - nearest: walking away from price, the first level holding at least
+     CLUSTER_MIN_SHARE of the biggest, then on to that cluster's peak. */
+const CLUSTER_SMOOTH_PCT = 0.5, CLUSTER_MIN_SHARE = 1 / 3;
+function clustersOf(st) {
+  const none = { near: null, big: null };
+  if (!st.levels || !st.price || !st.levels.step) return { dn: none, up: none };
   const w = Math.max(1, Math.round(st.price * CLUSTER_SMOOTH_PCT / 100 / st.levels.step));
-  const pick = (side, k) => {
-    let best = null;
-    for (let i = 0; i < side.length; i++) {
+  const pick = (side, k) => {          // side: bins ordered moving away from price
+    const sm = side.map((_, i) => {
       let a = 0;
       for (let j = Math.max(0, i - w); j <= Math.min(side.length - 1, i + w); j++) a += side[j][k];
-      if (a > 0 && (!best || a > best[k])) best = { price: side[i].price, [k]: a };
-    }
-    return best;
+      return a;
+    });
+    const max = sm.length ? Math.max.apply(null, sm) : 0;
+    if (!(max > 0)) return none;
+    const at = (i) => ({ price: side[i].price, [k]: sm[i] });
+    let n = sm.findIndex(x => x > 0 && x >= max * CLUSTER_MIN_SHARE);
+    while (n + 1 < sm.length && sm[n + 1] > sm[n]) n++;
+    return { near: at(n), big: at(sm.indexOf(max)) };
   };
   return {
-    dn: pick(st.levels.bins.filter(b => b.price < st.price), "long"),
+    dn: pick(st.levels.bins.filter(b => b.price < st.price).reverse(), "long"),
     up: pick(st.levels.bins.filter(b => b.price > st.price), "short"),
   };
+}
+function biggestClusters(st) {
+  const c = clustersOf(st);
+  return { dn: c.dn.big, up: c.up.big };
 }
 // Whichever of the two biggest clusters (below/above) sits closer to price
 // right now, in either direction — for a compact per-coin readout where
@@ -1136,9 +1154,9 @@ function paintMagnets() {
     d.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%  ·  ~" +
       bin[key].toFixed(bin[key] < 100 ? 1 : 0) + " " + unitName(st.cfg) + " clustered";
   };
-  const n = biggestClusters(st);
-  set("mag-dn", n.dn, "long");
-  set("mag-up", n.up, "short");
+  const c = clustersOf(st);
+  set("mag-dn-near", c.dn.near, "long"); set("mag-dn-big", c.dn.big, "long");
+  set("mag-up-near", c.up.near, "short"); set("mag-up-big", c.up.big, "short");
 }
 
 
