@@ -1040,10 +1040,12 @@ function paintTabs() {
       '<span class="tl">&nbsp;</span><span class="tc"></span>' +
       '<span class="tb"><i><b></b></i><em></em></span></button>').join("");
   }
-  SYMS.forEach((s, i) => {
-    const b = el.children[i], st = ST[s.key];
+  const dist = {};   // coin -> |% to its tab's cluster|, for the sort below
+  SYMS.forEach(s => {
+    const b = el.querySelector('[data-sym="' + s.key + '"]'), st = ST[s.key];
     const t60 = trailing60(st);
     const nc = nearestCluster(st);
+    dist[s.key] = nc ? Math.abs(nc.pct) : Infinity;
     b.className = "tab" + (s.key === active ? " on" : "");
     b.children[1].textContent = st.price ? fmtPx(st.price, s.dp) : "—";
     b.children[2].textContent = t60.tot ? fmtUsd(t60.tot) : "\u00a0";
@@ -1056,6 +1058,26 @@ function paintTabs() {
     tb.firstChild.firstChild.style.width = nc ? Math.max(0, 1 - Math.abs(nc.pct) / CLUSTER_BAR_PCT) * 100 + "%" : "0";
     tb.lastChild.textContent = nc ? (nc.pct > 0 ? "+" : "") + nc.pct.toFixed(2) + "%" : "";
   });
+  sortTabs(el, dist);
+}
+/* Tiles sorted by distance to their cluster, closest first (no cluster yet:
+   at the end, in list order). Re-sorted at most every TAB_SORT_MS and never
+   while a finger is down, so a tile doesn't jump away mid-tap. */
+const TAB_SORT_MS = 5000;
+let lastTabSort = 0, touching = false;
+addEventListener("pointerdown", () => { touching = true; }, true);
+addEventListener("pointerup", () => { touching = false; }, true);
+addEventListener("pointercancel", () => { touching = false; }, true);
+function sortTabs(el, dist) {
+  const now = Date.now();
+  if (touching || (lastTabSort && now - lastTabSort < TAB_SORT_MS)) return;
+  const order = SYMS.map((s, i) => [s.key, i])
+    .sort((a, b) => (dist[a[0]] - dist[b[0]]) || (a[1] - b[1])).map(x => x[0]);
+  const current = [...el.children].map(b => b.dataset.sym);
+  if (order.some((k, i) => k !== current[i])) {
+    for (const k of order) el.appendChild(el.querySelector('[data-sym="' + k + '"]'));
+  }
+  lastTabSort = now;
 }
 /* After a tab tap, scroll the coin's price & liquidation chart to the top of
    the screen — on a phone the 25 tabs push it well out of view. */
