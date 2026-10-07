@@ -315,6 +315,12 @@ const SYMS = [
      open interest from the plain-PEPE venues to it (see toPageUnits). */
   { key: "PEPE", bybit: "1000PEPEUSDT", binance: "1000pepeusdt", okx: "PEPE-USDT-SWAP",
     bitget: "PEPEUSDT", gate: "PEPE_USDT", htx: "PEPE-USDT", ctVal: 10000000, dp: 7, mmr: 0.01, unit: 1000 },
+  { key: "ATOM", bybit: "ATOMUSDT", binance: "atomusdt", okx: "ATOM-USDT-SWAP",
+    bitget: "ATOMUSDT", gate: "ATOM_USDT", htx: "ATOM-USDT", ctVal: 1, dp: 3, mmr: 0.01 },
+  /* BONK, like PEPE, but Bitget lists it as 1000BONK too: 1000-units on
+     Bybit, Binance and Bitget, plain BONK on OKX, Gate and HTX. */
+  { key: "BONK", bybit: "1000BONKUSDT", binance: "1000bonkusdt", okx: "BONK-USDT-SWAP",
+    bitget: "1000BONKUSDT", gate: "BONK_USDT", htx: "BONK-USDT", ctVal: 100000, dp: 6, mmr: 0.01, unit: 1000 },
 ];
 const BY = { bybit: {}, binance: {}, okx: {}, bitget: {}, gate: {}, htx: {} };
 for (const s of SYMS) {
@@ -322,14 +328,15 @@ for (const s of SYMS) {
   BY.okx[s.okx] = s.key; BY.bitget[s.bitget] = s.key;
   BY.gate[s.gate] = s.key; BY.htx[s.htx] = s.key;
 }
-/* venues that list a unit-scaled coin (cfg.unit) in those same units */
-const unitScaled = (exch) => exch === "bybit" || exch === "binance";
+/* whether a venue lists a unit-scaled coin (cfg.unit) in those same units:
+   its symbol says so ("1000PEPEUSDT", "1000bonkusdt") */
+const unitScaled = (cfg, exch) => /^1000/i.test(String(cfg[exch] || ""));
 /* what a quantity is counted in on the page: "PEPE" -> "1000PEPE" */
 const unitName = (cfg) => (cfg.unit || "") + cfg.key;
 /* a print from a plain-unit venue, converted to Bybit's scale (same USD) */
 function toPageUnits(st, e) {
   const u = st.cfg.unit;
-  if (u && !unitScaled(e.exch)) { e.price *= u; e.qty /= u; }
+  if (u && !unitScaled(st.cfg, e.exch)) { e.price *= u; e.qty /= u; }
   return e;
 }
 
@@ -770,7 +777,7 @@ async function loadOI(st) {
       return +(d.size || d.amount); }],
   ];
   await Promise.all(jobs.map(async ([k, fn]) => {
-    try { const v = await fn(); if (isFinite(v) && v > 0) st.oi[k] = st.cfg.unit && !unitScaled(k) ? v / st.cfg.unit : v; }
+    try { const v = await fn(); if (isFinite(v) && v > 0) st.oi[k] = st.cfg.unit && !unitScaled(st.cfg, k) ? v / st.cfg.unit : v; }
     catch (e) { st.oi[k] = null; }
   }));
 }
